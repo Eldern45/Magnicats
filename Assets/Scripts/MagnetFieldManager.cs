@@ -20,15 +20,13 @@ public class MagnetFieldManager : MonoBehaviour
 
     private readonly HashSet<MagnetCompositeScanner> scanners = new();
 
-    void Awake()
+    private void Awake()
     {
         Instance = this;
     }
-    
-    void OnEnable()
-    {
-        Instance = this;
 
+    private void Start()
+    {
         // Pick up all scanners in the scene
         var scannersNow = FindObjectsByType<MagnetCompositeScanner>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var s in scannersNow)
@@ -84,7 +82,7 @@ public class MagnetFieldManager : MonoBehaviour
     public bool drawGizmos;
     public Color gizmoColor = new(1,1,1,0.35f);
 
-    void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
         if (!drawGizmos || Instance != this) return;
         if (scanners == null) return;

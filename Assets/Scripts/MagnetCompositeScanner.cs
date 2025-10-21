@@ -128,6 +128,7 @@ public class MagnetCompositeScanner : MonoBehaviour
 
     private void OnDisable()
     {
+        StopAllCoroutines();
         MagnetFieldManager.Instance?.Unregister(this);
     }
 

@@ -40,8 +40,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Magnet")]
     public int heroPolarity = +1;     // +1 attached to red (the cat is blue), -1 vice versa
     public float magnetForceScale = 1f;
-    
-    void Start()
+
+    private void Start()
     {
         _moveAction = InputSystem.actions.FindAction("Move");
         _jumpAction = InputSystem.actions.FindAction("Jump");
@@ -51,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
         _collider = GetComponent<Collider2D>();
     }
 
-    void Update()
+    public void Update()
     {
         _moveInput = _moveAction.ReadValue<Vector2>();
         
@@ -72,7 +72,7 @@ public class PlayerMovement : MonoBehaviour
             _sr.flipX = _moveInput.x < 0f; // right -> false, left -> true
         }
     }
-    
+
     void FixedUpdate()
     {
         if (!_rb) return;
@@ -138,7 +138,7 @@ public class PlayerMovement : MonoBehaviour
         _rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
-    void OnDrawGizmos()
+    public void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position + Vector3.down * castDistance, boxSize);
     }
