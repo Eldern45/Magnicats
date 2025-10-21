@@ -646,7 +646,7 @@ GameObject:
   - component: {fileID: 846374246}
   - component: {fileID: 846374251}
   m_Layer: 6
-  m_Name: Magnetred
+  m_Name: MagnetRed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
