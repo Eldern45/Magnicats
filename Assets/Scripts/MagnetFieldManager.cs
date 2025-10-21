@@ -70,7 +70,7 @@ public class MagnetFieldManager : MonoBehaviour
                 // slightly "soften" as if the force is not taken from the geometric center
                 float falloff = 1f / Mathf.Pow(d, Mathf.Max(0.5f, falloffPower)); // >= 0.5 to avoid being "too flat"
 
-                float magnitude = globalK * r.strength * falloff; // force ∝ region strength and falloff
+                float magnitude = globalK * r.strength * falloff; // the main formula
                 sum += (dir / dist) * (sign * magnitude);
             }
         }
