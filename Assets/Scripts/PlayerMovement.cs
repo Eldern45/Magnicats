@@ -41,6 +41,12 @@ public class PlayerMovement : MonoBehaviour
     public int heroPolarity = +1;     // +1 attached to red (the cat is blue), -1 vice versa
     public float magnetForceScale = 1f;
 
+    [Header("Magnet Mode")]
+    public MagnetClickMode clickMode = MagnetClickMode.TogglePolarity;
+    public enum MagnetClickMode { TogglePolarity, ToggleOnOff }
+    public bool magnetEnabled = true;
+    public int lockedPolarity = +1;
+
     private void Start()
     {
         _moveAction = InputSystem.actions.FindAction("Move");
@@ -62,10 +68,19 @@ public class PlayerMovement : MonoBehaviour
 
         if (_mouseAction.WasPressedThisFrame())
         {
-            heroPolarity = heroPolarity == 1 ? -1 : 1;
-            if (heroPolarity == 1) _sr.color = Color.cyan;
-            else _sr.color = Color.red;
+            if (clickMode == MagnetClickMode.TogglePolarity)
+            {
+                heroPolarity = (heroPolarity == 1) ? -1 : 1;
+            }
+            else
+            {
+                magnetEnabled = !magnetEnabled;
+            }
+            UpdateSpriteTint();
             // Debug.Log($"Polarity: {heroPolarity}");
+
+        if (clickMode == MagnetClickMode.ToggleOnOff)
+            heroPolarity = lockedPolarity;
         }
 
 
@@ -118,7 +133,9 @@ public class PlayerMovement : MonoBehaviour
             _lastGroundedTime = float.NegativeInfinity;
         }
 
-        if (MagnetFieldManager.Instance)
+        bool applyMagnet = (clickMode == MagnetClickMode.TogglePolarity) || (clickMode == MagnetClickMode.ToggleOnOff && magnetEnabled);
+
+        if (applyMagnet && MagnetFieldManager.Instance)
         {
             Vector2 magForce = MagnetFieldManager.Instance.GetForceAt(_rb.position, heroPolarity) * magnetForceScale;
             _rb.AddForce(magForce, ForceMode2D.Force);
@@ -143,5 +160,15 @@ public class PlayerMovement : MonoBehaviour
     public void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position + Vector3.down * castDistance, boxSize);
+    }
+
+    private void UpdateSpriteTint()
+    {
+        if (clickMode == MagnetClickMode.ToggleOnOff && !magnetEnabled)
+        {
+            _sr.color = Color.white;
+            return;
+        }
+        _sr.color = (heroPolarity == 1) ? Color.cyan : Color.red;
     }
 }
