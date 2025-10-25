@@ -7,36 +7,36 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 8f;
     public float accelGround = 80f;
     public float accelAir = 60f;
-    
+
     [Header("Jump")]
     public float jumpForce = 5f;
     public float jumpBufferTime = 0.2f;
     public float coyoteTime = 0.12f;
     private float _lastJumpPressedTime = float.NegativeInfinity;
     private float _lastGroundedTime = float.NegativeInfinity;
-    
+
     [Header("Input")]
     private InputAction _moveAction;
     private InputAction _jumpAction;
     private InputAction _mouseAction;
     private Vector2 _moveInput;
-    
+
     [Header("Components")]
     private Rigidbody2D _rb;
     private SpriteRenderer _sr;
     private const float DeadZone = 0.1f;
 
-    [Header("Ground Check")] 
+    [Header("Ground Check")]
     public Vector2 boxSize;
     public float castDistance;
     public LayerMask groundLayer;
     private bool _isGrounded;
-    
+
     [Header("Physics Materials")]
     public PhysicsMaterial2D groundMaterial;
     public PhysicsMaterial2D airMaterial;
     private Collider2D _collider;
-    
+
     [Header("Magnet")]
     public int heroPolarity = +1;     // +1 attached to red (the cat is blue), -1 vice versa
     public float magnetForceScale = 1f;
@@ -54,7 +54,9 @@ public class PlayerMovement : MonoBehaviour
     public void Update()
     {
         _moveInput = _moveAction.ReadValue<Vector2>();
-        
+
+        Debug.Log($"Move Input: {_moveInput}");
+
         if (_jumpAction.WasPressedThisFrame())
             _lastJumpPressedTime = Time.time;
 
@@ -79,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
 
         _isGrounded = IsGrounded();
         if (_collider) _collider.sharedMaterial = _isGrounded ? groundMaterial : airMaterial;
-        if (_isGrounded)  _lastGroundedTime = Time.time;
+        if (_isGrounded) _lastGroundedTime = Time.time;
 
         // Target horizontal speed
         bool hasInput = Mathf.Abs(_moveInput.x) > DeadZone;
@@ -105,17 +107,17 @@ public class PlayerMovement : MonoBehaviour
             );
         }
 
-        
+
         bool bufferedJump = (Time.time <= _lastJumpPressedTime + jumpBufferTime);
-        bool canCoyote    = (Time.time <= _lastGroundedTime + coyoteTime);
+        bool canCoyote = (Time.time <= _lastGroundedTime + coyoteTime);
 
         if (bufferedJump && (_isGrounded || canCoyote))
         {
             DoJump();
             _lastJumpPressedTime = float.NegativeInfinity;
-            _lastGroundedTime    = float.NegativeInfinity;
+            _lastGroundedTime = float.NegativeInfinity;
         }
-        
+
         if (MagnetFieldManager.Instance)
         {
             Vector2 magForce = MagnetFieldManager.Instance.GetForceAt(_rb.position, heroPolarity) * magnetForceScale;
