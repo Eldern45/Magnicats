@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (_mouseAction.WasPressedThisFrame())
         {
-            heroPolarity *= -1;
+            heroPolarity = heroPolarity == 1 ? -1 : 1;
             if (heroPolarity == 1) _sr.color = Color.cyan;
             else _sr.color = Color.red;
             // Debug.Log($"Polarity: {heroPolarity}");
