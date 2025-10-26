@@ -132,9 +132,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cce5788beefaf1942ae85a366e3dd3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlaeyrMovement
-  moveSpeed: 8
-  accelGround: 60
-  accelAir: 30
+  moveSpeed: 14
+  accelGround: 75
+  accelAir: 60
   jumpForce: 22
   jumpBufferTime: 0.1
   coyoteTime: 0.12
@@ -147,6 +147,9 @@ MonoBehaviour:
   airMaterial: {fileID: 6200000, guid: 2f506d2c799491e4abbf82eab0644630, type: 2}
   heroPolarity: 1
   magnetForceScale: 1
+  clickMode: 1
+  magnetEnabled: 1
+  lockedPolarity: -1
 --- !u!61 &5167381261917030589
 BoxCollider2D:
   m_ObjectHideFlags: 0

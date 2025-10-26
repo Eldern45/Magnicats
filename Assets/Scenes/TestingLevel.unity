@@ -3896,22 +3896,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4765666493171390620, guid: 7fc9833ec1430224c8c6368194c09f3e, type: 3}
-      propertyPath: globalK
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4765666493171390620, guid: 7fc9833ec1430224c8c6368194c09f3e, type: 3}
-      propertyPath: minDistance
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4765666493171390620, guid: 7fc9833ec1430224c8c6368194c09f3e, type: 3}
-      propertyPath: falloffPower
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4765666493171390620, guid: 7fc9833ec1430224c8c6368194c09f3e, type: 3}
-      propertyPath: maxInfluenceRadius
-      value: 8
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3925,30 +3909,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 627456879280969052, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
-      propertyPath: accelAir
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 627456879280969052, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
-      propertyPath: clickMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 627456879280969052, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
-      propertyPath: moveSpeed
-      value: 14
-      objectReference: {fileID: 0}
-    - target: {fileID: 627456879280969052, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
-      propertyPath: accelGround
-      value: 75
-      objectReference: {fileID: 0}
-    - target: {fileID: 627456879280969052, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
-      propertyPath: magnetEnabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 627456879280969052, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
-      propertyPath: lockedPolarity
-      value: -1
-      objectReference: {fileID: 0}
     - target: {fileID: 3276537861509153639, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
       propertyPath: m_Name
       value: Cat
@@ -3991,10 +3951,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5033938853666747380, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5167381261917030589, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
-      propertyPath: m_ExcludeLayers.m_Bits
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
