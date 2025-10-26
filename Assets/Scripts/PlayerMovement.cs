@@ -61,8 +61,6 @@ public class PlayerMovement : MonoBehaviour
     {
         _moveInput = _moveAction.ReadValue<Vector2>();
 
-        Debug.Log($"Move Input: {_moveInput}");
-
         if (_jumpAction.WasPressedThisFrame())
             _lastJumpPressedTime = Time.time;
 
