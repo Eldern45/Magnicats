@@ -62,13 +62,16 @@ public class MagnetFieldManager : MonoBehaviour
                 if (maxInfluenceRadius > 0f && dist > maxInfluenceRadius + r.effectiveRadius)
                     continue;
 
-                float sign = (heroPolarity) * (r.polarity == MagnetPolarity.Red ? +1 : -1); 
+                float sign = (heroPolarity) * (r.polarity == MagnetPolarity.Red ? +1 : -1);
                 // sign = +1 attraction, -1 repulsion (you can change the rule)
 
-                float d = Mathf.Max(minDistance, dist - r.effectiveRadius * 0.5f); 
-                
+                float d = Mathf.Max(minDistance, dist - r.effectiveRadius * 0.5f);
+
                 // slightly "soften" as if the force is not taken from the geometric center
-                float falloff = 1f / Mathf.Pow(d, Mathf.Max(0.5f, falloffPower)); // >= 0.5 to avoid being "too flat"
+                // float falloff = 1f / Mathf.Pow(d, Mathf.Max(0.5f, falloffPower)); // >= 0.5 to avoid being "too flat"
+
+                float falloff = 1f / Mathf.Pow(1f + d, falloffPower);
+
 
                 float magnitude = globalK * r.strength * falloff; // the main formula
                 sum += (dir / dist) * (sign * magnitude);
@@ -77,10 +80,10 @@ public class MagnetFieldManager : MonoBehaviour
 
         return sum;
     }
-    
-    
+
+
     public bool drawGizmos;
-    public Color gizmoColor = new(1,1,1,0.35f);
+    public Color gizmoColor = new(1, 1, 1, 0.35f);
 
     private void OnDrawGizmosSelected()
     {

@@ -79,8 +79,8 @@ public class PlayerMovement : MonoBehaviour
             UpdateSpriteTint();
             // Debug.Log($"Polarity: {heroPolarity}");
 
-        if (clickMode == MagnetClickMode.ToggleOnOff)
-            heroPolarity = lockedPolarity;
+            if (clickMode == MagnetClickMode.ToggleOnOff)
+                heroPolarity = lockedPolarity;
         }
 
 
@@ -139,7 +139,12 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector2 magForce = MagnetFieldManager.Instance.GetForceAt(_rb.position, heroPolarity) * magnetForceScale;
             _rb.AddForce(magForce, ForceMode2D.Force);
+
+            // Damping proportional to magnet force
+            float magFactor = Mathf.Clamp01(magForce.magnitude / 50f);
+            _rb.linearVelocity *= Mathf.Lerp(1f, 0.9f, magFactor);
         }
+
     }
 
 
