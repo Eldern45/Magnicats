@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &266927018
+--- !u!1001 &42255705
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -128,12 +128,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 627456879280969052, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
+      propertyPath: clickMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 627456879280969052, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
       propertyPath: jumpForce
       value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 627456879280969052, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
       propertyPath: coyoteTime
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 627456879280969052, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
+      propertyPath: magnetEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 627456879280969052, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
+      propertyPath: lockedPolarity
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 2029228373367540822, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
       propertyPath: m_GravityScale
@@ -6671,5 +6683,5 @@ SceneRoots:
   - {fileID: 1102874331}
   - {fileID: 983425586}
   - {fileID: 642176866}
-  - {fileID: 266927018}
   - {fileID: 1888711495}
+  - {fileID: 42255705}
