@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3205781389506432548}
   - component: {fileID: 4765666493171390620}
   m_Layer: 0
-  m_Name: MagnetFieldManager
+  m_Name: MagnetGizmosViewer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

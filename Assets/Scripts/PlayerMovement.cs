@@ -24,7 +24,6 @@ public class PlayerMovement : MonoBehaviour
     // --- Input Actions ---
     private InputAction _moveAction;
     private InputAction _jumpAction;
-    private InputAction _magnetAction;
     private Vector2 _moveInput;
 
     // --- Components ---
@@ -44,15 +43,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PhysicsMaterial2D groundMaterial;
     [SerializeField] private PhysicsMaterial2D airMaterial;
 
-    // --- Magnet Settings ---
-    [Header("Magnet")]
-    [SerializeField] private int heroPolarity = +1;
-    [SerializeField] private float magnetForceScale = 1f;
-    [SerializeField] private MagnetClickMode clickMode = MagnetClickMode.TogglePolarity;
-    [SerializeField] private bool magnetEnabled = true;
-    [SerializeField] private int lockedPolarity = +1;
-
-    public enum MagnetClickMode { TogglePolarity, ToggleOnOff }
+    // --- Magnet Component ---
+    private PlayerMagnetController _magnetController;
 
     // --- Unity Events ---
 
@@ -64,14 +56,13 @@ public class PlayerMovement : MonoBehaviour
 
         _moveAction = InputSystem.actions.FindAction("Move");
         _jumpAction = InputSystem.actions.FindAction("Jump");
-        _magnetAction = InputSystem.actions.FindAction("MagnetActivate");
+        _magnetController = GetComponent<PlayerMagnetController>();
     }
 
     private void Update()
     {
         ReadInput();
         HandleJumpBuffer();
-        HandleMagnetInput();
         UpdateSpriteFacing();
     }
 
@@ -80,7 +71,6 @@ public class PlayerMovement : MonoBehaviour
         UpdateGroundedState();
         ApplyMovement();
         HandleJumpExecution();
-        ApplyMagnetForce();
     }
 
     // --- Input Handling ---
@@ -93,24 +83,7 @@ public class PlayerMovement : MonoBehaviour
             _lastJumpPressedTime = Time.time;
     }
 
-    private void HandleMagnetInput()
-    {
-        if (!_magnetAction.WasPressedThisFrame()) return;
-
-        switch (clickMode)
-        {
-            case MagnetClickMode.TogglePolarity:
-                heroPolarity *= -1;
-                break;
-
-            case MagnetClickMode.ToggleOnOff:
-                magnetEnabled = !magnetEnabled;
-                heroPolarity = lockedPolarity;
-                break;
-        }
-
-        UpdateSpriteTint();
-    }
+    // Magnet input and force are handled by PlayerMagnetController component now
 
     private void UpdateSpriteFacing()
     {
@@ -156,23 +129,7 @@ public class PlayerMovement : MonoBehaviour
         _rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
-    // --- Magnet Force ---
-
-    private void ApplyMagnetForce()
-    {
-        bool shouldApply =
-            clickMode == MagnetClickMode.TogglePolarity ||
-            (clickMode == MagnetClickMode.ToggleOnOff && magnetEnabled);
-
-        if (!shouldApply || MagnetFieldManager.Instance == null) return;
-
-        Vector2 magForce = MagnetFieldManager.Instance.GetForceAt(_rb.position, heroPolarity) * magnetForceScale;
-        _rb.AddForce(magForce, ForceMode2D.Force);
-
-        // Light damping when strong magnetic forces apply
-        float magFactor = Mathf.Clamp01(magForce.magnitude / 50f);
-        _rb.linearVelocity *= Mathf.Lerp(1f, 0.9f, magFactor);
-    }
+    // Magnet force is handled by PlayerMagnetController component now
 
     // --- Ground Check ---
 
@@ -203,17 +160,7 @@ public class PlayerMovement : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    private void UpdateSpriteTint()
-    {
-        if (clickMode == MagnetClickMode.ToggleOnOff && !magnetEnabled)
-        {
-            _sr.color = Color.white;
-        }
-        else
-        {
-            _sr.color = heroPolarity == 1 ? Color.cyan : Color.red;
-        }
-    }
+    // Sprite tint related to magnet is handled by PlayerMagnetController component now
 
     private void OnDrawGizmos()
     {

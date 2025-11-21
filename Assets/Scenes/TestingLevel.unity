@@ -167,6 +167,28 @@ Transform:
   - {fileID: 1947486140}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &447618239 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3276537861509153639, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
+  m_PrefabInstance: {fileID: 7803956891425961984}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &447618245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 447618239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cec539f08783c74b9a3c7fa3399b24c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMagnetSettings
+  heroPolarity: 1
+  magnetForceScale: 1
+  clickMode: 1
+  magnetEnabled: 1
+  lockedPolarity: -1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,6 +762,10 @@ MonoBehaviour:
   composite: {fileID: 846374246}
   tilemap: {fileID: 846374250}
   baseStrengthPerTile: 5
+  strengthScale: 20
+  falloffPower: 2
+  maxInfluenceRadius: 12
+  minDistance: 0.25
 --- !u!1 &955794108
 GameObject:
   m_ObjectHideFlags: 0
@@ -3844,6 +3870,10 @@ MonoBehaviour:
   composite: {fileID: 2055250436}
   tilemap: {fileID: 2055250435}
   baseStrengthPerTile: 5
+  strengthScale: 20
+  falloffPower: 2
+  maxInfluenceRadius: 12
+  minDistance: 0.25
 --- !u!1001 &875623924502706299
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3858,11 +3888,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3205781389506432548, guid: 7fc9833ec1430224c8c6368194c09f3e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.31616
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3205781389506432548, guid: 7fc9833ec1430224c8c6368194c09f3e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.83456
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3205781389506432548, guid: 7fc9833ec1430224c8c6368194c09f3e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3894,6 +3924,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3205781389506432548, guid: 7fc9833ec1430224c8c6368194c09f3e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4765666493171390620, guid: 7fc9833ec1430224c8c6368194c09f3e, type: 3}
+      propertyPath: drawGizmos
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3956,7 +3990,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3276537861509153639, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
+      insertIndex: 3
+      addedObject: {fileID: 447618245}
   m_SourcePrefab: {fileID: 100100000, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
