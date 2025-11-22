@@ -1102,7 +1102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c60c71478c0044358be697d58746665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIController
-  pauseMenuPrefab: {fileID: 0}
+  pauseMenuPrefab: {fileID: 2790985232839223667, guid: ccaded6d99ead4910918c4d5dde0e2cb, type: 3}
   hudPrefab: {fileID: 3251427541698655479, guid: 2eab19564e0bc448d951c2eac924203d, type: 3}
 --- !u!4 &1373967059
 Transform:

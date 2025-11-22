@@ -40,6 +40,7 @@ public class PlayerMagnetController : MonoBehaviour
 
     private void Update()
     {
+        if (GameController.Instance != null && GameController.Instance.IsPaused) return;
         HandleMagnetInput();
     }
 

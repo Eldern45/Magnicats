@@ -33,17 +33,23 @@ public class UIController : MonoBehaviour
     
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name != "StartMenu")
-        {
-            SpawnHUD();
-        }
-        else
+        if (scene.name == "StartMenu")
         {
             if (hudInstance != null)
             {
                 Destroy(hudInstance);
                 hudInstance = null;
             }
+            
+            if (pauseMenuInstance != null)
+            {
+                Destroy(pauseMenuInstance);
+                pauseMenuInstance = null;
+            }
+        }
+        else
+        {
+            SpawnHUD();
         }
     }
     

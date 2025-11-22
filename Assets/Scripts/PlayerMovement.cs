@@ -61,6 +61,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (GameController.Instance != null && GameController.Instance.IsPaused) return;
         ReadInput();
         HandleJumpBuffer();
         UpdateSpriteFacing();

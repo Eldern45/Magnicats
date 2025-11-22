@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -27,12 +28,26 @@ public class GameController : MonoBehaviour
         SetupPlayButton();
     }
 
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "StartMenu")
+        {
+            SetupPlayButton();
+        }
+    }
+
     void SetupPlayButton()
     {
         playButton = GameObject.Find("PlayButton")?.GetComponent<Button>();
         
         if (playButton != null)
         {
+            playButton.onClick.RemoveListener(StartGame);
             playButton.onClick.AddListener(StartGame);
         }
     }
@@ -67,22 +82,12 @@ public class GameController : MonoBehaviour
         ResetTimer();
         CurrentLevel = 1;
         ResumeGame();
-        
-        if (UIController.Instance != null)
-        {
-            UIController.Instance.gameObject.SetActive(true);
-        }
-        
+
         SceneManager.LoadScene("Level1New");
     }
     
     public void ReturnToMainMenu()
     {
-        if (UIController.Instance != null)
-        {
-            UIController.Instance.gameObject.SetActive(false);
-        }
-        
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("StartMenu");
     }
 }
