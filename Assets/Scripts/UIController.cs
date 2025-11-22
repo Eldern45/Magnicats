@@ -33,7 +33,7 @@ public class UIController : MonoBehaviour
     
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "StartMenu")
+        if (scene.name == "StartMenu" || scene.name == "WinScreen")
         {
             if (hudInstance != null)
             {

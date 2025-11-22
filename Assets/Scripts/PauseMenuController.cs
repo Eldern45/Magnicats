@@ -13,22 +13,29 @@ public class PauseMenuController : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioMixer audioMixer;
 
-    private const string VOLUME_KEY = "MasterVolume";
+    private const string VOLUME_KEY   = "MasterVolume";
+    private const string MIXER_PARAM  = "MasterVolume";
 
     void Start()
     {
         restartButton.onClick.AddListener(OnRestartClicked);
         mainMenuButton.onClick.AddListener(OnExitClicked);
+
         float savedVolume = PlayerPrefs.GetFloat(VOLUME_KEY, 1f);
         volumeSlider.value = savedVolume;
         SetMixerVolume(savedVolume);
+
         volumeSlider.onValueChanged.AddListener(OnVolumeChanged);
     }
 
     void SetMixerVolume(float value)
     {
         float dB = Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
-        audioMixer.SetFloat("Master", dB);
+
+        if (!audioMixer.SetFloat(MIXER_PARAM, dB))
+        {
+            Debug.LogWarning($"No exposed parameter named '{MIXER_PARAM}' on this AudioMixer.");
+        }
     }
 
     void OnVolumeChanged(float value)

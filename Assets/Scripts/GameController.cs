@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour
     public static GameController Instance { get; private set; }
 
     private Button playButton;
+    private Button exitButton;
     public float TotalTime { get; private set; }
     public int CurrentLevel { get; set; }
     public bool IsPaused { get; private set; }
@@ -25,7 +26,7 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        SetupPlayButton();
+        SetupButtons();
     }
 
     void OnDestroy()
@@ -37,11 +38,11 @@ public class GameController : MonoBehaviour
     {
         if (scene.name == "StartMenu")
         {
-            SetupPlayButton();
+            SetupButtons();
         }
     }
 
-    void SetupPlayButton()
+    void SetupButtons()
     {
         playButton = GameObject.Find("PlayButton")?.GetComponent<Button>();
         
@@ -49,6 +50,13 @@ public class GameController : MonoBehaviour
         {
             playButton.onClick.RemoveListener(StartGame);
             playButton.onClick.AddListener(StartGame);
+        }
+
+        exitButton = GameObject.Find("ExitButton")?.GetComponent<Button>();
+        if (exitButton != null)
+        {
+            exitButton.onClick.RemoveAllListeners();
+            exitButton.onClick.AddListener(QuitGame);
         }
     }
     
@@ -89,5 +97,14 @@ public class GameController : MonoBehaviour
     public void ReturnToMainMenu()
     {
         SceneManager.LoadScene("StartMenu");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+
+        #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+        #endif
     }
 }
