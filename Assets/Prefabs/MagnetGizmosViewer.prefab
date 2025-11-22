@@ -44,9 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adaddc86bc4120745afb86d85d421df3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MagnetFieldManager
-  globalK: 100
-  falloffPower: 1
-  maxInfluenceRadius: 8
-  minDistance: 0.5
   drawGizmos: 1
   gizmoColor: {r: 0.1917906, g: 0.82641506, b: 0.25433108, a: 0.35}
+  drawInfluenceRadius: 1
+  influenceColor: {r: 1, g: 0.8, b: 0.2, a: 0.3}
+  drawDirection: 1
+  directionColor: {r: 0.2, g: 1, b: 0.2, a: 0.9}
+  directionArrowLength: 2

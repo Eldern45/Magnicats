@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5033938853666747380}
   - component: {fileID: 38360982387697233}
   - component: {fileID: 2029228373367540822}
+  - component: {fileID: 4831680530437004395}
   - component: {fileID: 627456879280969052}
   - component: {fileID: 5167381261917030589}
   m_Layer: 0
@@ -120,6 +121,26 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &4831680530437004395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3276537861509153639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cec539f08783c74b9a3c7fa3399b24c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMagnetController
+  heroPolarity: 1
+  magnetForceScale: 1
+  clickMode: 1
+  magnetEnabled: 0
+  lockedPolarity: 1
+  neutralSprite: {fileID: 21300000, guid: 7499e297d778ad74b90e0d534eb052d7, type: 3}
+  redSprite: {fileID: 21300000, guid: 3b5cdd5afd1e11343adbbfd916c5cd4e, type: 3}
+  blueSprite: {fileID: 21300000, guid: f40c973b501536a4c9a0b70db0cdd1c2, type: 3}
 --- !u!114 &627456879280969052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,18 +159,13 @@ MonoBehaviour:
   jumpForce: 22
   jumpBufferTime: 0.1
   coyoteTime: 0.12
-  boxSize: {x: 0.8, y: 0.2}
-  castDistance: 0.79
+  boxSize: {x: 0.84, y: 0.15}
+  castDistance: 0.85
   groundLayer:
     serializedVersion: 2
     m_Bits: 72
   groundMaterial: {fileID: 6200000, guid: 9191c6e544c17fd4898da49f8b24d495, type: 2}
   airMaterial: {fileID: 6200000, guid: 2f506d2c799491e4abbf82eab0644630, type: 2}
-  heroPolarity: 1
-  magnetForceScale: 1
-  clickMode: 1
-  magnetEnabled: 1
-  lockedPolarity: -1
 --- !u!61 &5167381261917030589
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -184,15 +200,15 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.039995193, y: 0.017650843}
+  m_Offset: {x: -0.012625217, y: 0.017650843}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.6300405, y: 0.42806324}
+    pivot: {x: 0.6, y: 0.43}
     oldSize: {x: 2, y: 2}
     newSize: {x: 1.46, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.9093704, y: 1.7551007}
+  m_Size: {x: 0.9641104, y: 1.7551007}
   m_EdgeRadius: 0

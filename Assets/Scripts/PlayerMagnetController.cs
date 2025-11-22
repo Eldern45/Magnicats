@@ -11,6 +11,11 @@ public class PlayerMagnetController : MonoBehaviour
     [SerializeField] private MagnetClickMode clickMode = MagnetClickMode.TogglePolarity;
     [SerializeField] private bool magnetEnabled = true;
     [SerializeField] private int lockedPolarity = +1;
+    
+    [Header("Hero Sprites")]
+    [SerializeField] private Sprite neutralSprite;
+    [SerializeField] private Sprite redSprite;       //  +1
+    [SerializeField] private Sprite blueSprite;      //  -1
 
     public enum MagnetClickMode { TogglePolarity, ToggleOnOff }
 
@@ -24,6 +29,7 @@ public class PlayerMagnetController : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody2D>();
         _sr = GetComponent<SpriteRenderer>();
+        if (!_sr) _sr.color = Color.white;
 
         // Fetch input action from the global InputSystem
         _magnetAction = InputSystem.actions?.FindAction("MagnetActivate");
@@ -99,14 +105,15 @@ public class PlayerMagnetController : MonoBehaviour
     private void UpdateSpriteTint()
     {
         if (!_sr) return;
+        _sr.color = Color.white;
 
         if (clickMode == MagnetClickMode.ToggleOnOff && !magnetEnabled)
         {
-            _sr.color = Color.white;
+            _sr.sprite = neutralSprite;
         }
         else
         {
-            _sr.color = heroPolarity == 1 ? Color.red : Color.cyan;
+            _sr.sprite = heroPolarity == 1 ? redSprite : blueSprite;
         }
     }
 }
