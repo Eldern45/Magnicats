@@ -26,7 +26,19 @@ public class CameraMovement : MonoBehaviour
     [Tooltip("Use unscaled delta time (true) or scaled (false) for smoothing")]
     public bool useUnscaledTime = false;
 
+    [Header("Lookahead")]
+    [Tooltip("Enable lookahead - camera shifts in the direction of player movement")]
+    public bool enableLookahead = true;
+    [Tooltip("Maximum distance to shift camera ahead horizontally (X) and vertically (Y) in world units")]
+    public Vector2 lookaheadDistance = new Vector2(2f, 1f);
+    [Tooltip("Time to smooth lookahead offset changes")]
+    [Min(0f)] public float lookaheadSmoothTime = 0.3f;
+    [Tooltip("Minimum velocity magnitude to trigger lookahead")]
+    [Min(0f)] public float lookaheadThreshold = 0.5f;
+
     private Vector3 _velocity; // for SmoothDamp
+    private Vector2 _lookaheadOffset; // current lookahead offset
+    private Vector2 _lookaheadVelocity; // for lookahead smoothing
 
     [Header("Vertical Limits")]
     [Tooltip("Prevent camera from showing below the ground line (orthographic cameras only)")]
@@ -45,7 +57,7 @@ public class CameraMovement : MonoBehaviour
     public bool limitRight;
     [Tooltip("World X of the left bound of the level")] public float leftBoundX = -10f;
     [Tooltip("World X of the right bound of the level")] public float rightBoundX = 10f;
-    
+
     private Camera _cam;
 
     private void Awake()
@@ -83,8 +95,43 @@ public class CameraMovement : MonoBehaviour
             else if (delta.y < -halfH) offset.y = delta.y + halfH;
         }
 
-        // Desired camera position keeps the same Z
-        Vector3 desired = new Vector3(camPos.x + offset.x, camPos.y + offset.y, camPos.z);
+        float dt = useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+
+        // Calculate lookahead offset based on target velocity
+        Vector2 lookahead = Vector2.zero;
+        if (enableLookahead && (lookaheadDistance.x > 0f || lookaheadDistance.y > 0f))
+        {
+            Rigidbody2D targetRb = target.GetComponent<Rigidbody2D>();
+            if (targetRb != null)
+            {
+                Vector2 velocity = targetRb.linearVelocity;
+                float speed = velocity.magnitude;
+
+                if (speed > lookaheadThreshold)
+                {
+                    Vector2 direction = velocity.normalized;
+                    Vector2 targetLookahead = new Vector2(
+                        direction.x * lookaheadDistance.x,
+                        direction.y * lookaheadDistance.y
+                    );
+
+                    // Smooth the lookahead offset
+                    _lookaheadOffset = Vector2.SmoothDamp(_lookaheadOffset, targetLookahead,
+                        ref _lookaheadVelocity, lookaheadSmoothTime, Mathf.Infinity, dt);
+                }
+                else
+                {
+                    // Smoothly return to zero when not moving
+                    _lookaheadOffset = Vector2.SmoothDamp(_lookaheadOffset, Vector2.zero,
+                        ref _lookaheadVelocity, lookaheadSmoothTime, Mathf.Infinity, dt);
+                }
+
+                lookahead = _lookaheadOffset;
+            }
+        }
+
+        // Desired camera position keeps the same Z and includes lookahead
+        Vector3 desired = new Vector3(camPos.x + offset.x + lookahead.x, camPos.y + offset.y + lookahead.y, camPos.z);
 
         // Vertical clamps (bottom/top) for orthographic camera — independent booleans
         {
@@ -169,7 +216,6 @@ public class CameraMovement : MonoBehaviour
             }
         }
 
-        float dt = useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
         if (smoothTime <= 0f)
         {
             // No smoothing
@@ -185,7 +231,8 @@ public class CameraMovement : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         // Ensure camera reference is available in editor
-        if (!_cam) return;
+        Camera cam = _cam ? _cam : GetComponent<Camera>();
+        if (!cam) return;
         // Draw the dead zone rectangle around the camera to aid tuning
         Gizmos.color = new Color(1f, 1f, 0.1f, 0.9f);
         Vector3 c = transform.position;
@@ -215,9 +262,9 @@ public class CameraMovement : MonoBehaviour
         // Draw ground line (bottom clamp) when enabled
         if (limitBottom)
         {
-            if (_cam && _cam.orthographic)
+            if (cam && cam.orthographic)
             {
-                float halfWidth = _cam.orthographicSize * _cam.aspect;
+                float halfWidth = cam.orthographicSize * cam.aspect;
                 Vector3 g1 = new Vector3(c.x - halfWidth, groundY, c.z);
                 Vector3 g2 = new Vector3(c.x + halfWidth, groundY, c.z);
                 Gizmos.color = new Color(1f, 0.3f, 0.3f, 0.9f);
@@ -228,9 +275,9 @@ public class CameraMovement : MonoBehaviour
         // Draw ceiling line (top clamp) when enabled
         if (limitTop)
         {
-            if (_cam && _cam.orthographic)
+            if (cam && cam.orthographic)
             {
-                float halfWidth = _cam.orthographicSize * _cam.aspect;
+                float halfWidth = cam.orthographicSize * cam.aspect;
                 Vector3 c1 = new Vector3(c.x - halfWidth, ceilingY, c.z);
                 Vector3 c2 = new Vector3(c.x + halfWidth, ceilingY, c.z);
                 Gizmos.color = new Color(0.3f, 1f, 0.3f, 0.9f);
@@ -240,9 +287,9 @@ public class CameraMovement : MonoBehaviour
 
         // Draw left/right bounds (horizontal clamp) when enabled
         {
-            if (_cam && _cam.orthographic)
+            if (cam && cam.orthographic)
             {
-                float halfHeight = _cam.orthographicSize;
+                float halfHeight = cam.orthographicSize;
 
                 if (limitLeft)
                 {

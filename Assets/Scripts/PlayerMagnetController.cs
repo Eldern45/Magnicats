@@ -11,7 +11,7 @@ public class PlayerMagnetController : MonoBehaviour
     [SerializeField] private MagnetClickMode clickMode = MagnetClickMode.TogglePolarity;
     [SerializeField] private bool magnetEnabled = true;
     [SerializeField] private int lockedPolarity = +1;
-    
+
     [Header("Hero Sprites")]
     [SerializeField] private Sprite neutralSprite;
     [SerializeField] private Sprite redSprite;       //  +1
@@ -97,9 +97,8 @@ public class PlayerMagnetController : MonoBehaviour
         Vector2 magForce = total * magnetForceScale;
         _rb.AddForce(magForce, ForceMode2D.Force);
 
-        // Slight damping under strong magnetic influence
-        float magFactor = Mathf.Clamp01(magForce.magnitude / 50f);
-        _rb.linearVelocity *= Mathf.Lerp(1f, 0.9f, magFactor);
+        // NOTE: Damping removed to prevent it from reducing jump velocity
+        // The damping was applying to all velocity including jumps, causing them to feel weak
     }
 
     private void UpdateSpriteTint()
