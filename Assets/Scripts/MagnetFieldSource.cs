@@ -22,16 +22,20 @@ public class MagnetFieldSource : MonoBehaviour
     public float baseStrengthPerTile = 1f;
 
     [Header("Field Mode")]
-    [Tooltip("Тип поля: Radial — текущее радиальное поведение; FixedDirectional — фиксированное направление силы")]
+    [Tooltip("Field type: Radial — current radial behavior; FixedDirectional — fixed force direction")]
     public MagnetFieldMode fieldMode = MagnetFieldMode.Radial;
 
-    [Tooltip("Направление силы для режима FixedDirectional")] 
+    [Tooltip("Force direction for FixedDirectional mode")] 
     public Vector2 fixedDirection = Vector2.right;
 
-    [Tooltip("Интерпретировать fixedDirection в локальном пространстве источника")] 
+    [Tooltip("Interpret fixedDirection in the source's local space")] 
     public bool directionsInLocalSpace = true;
 
-    [Header("Field Physics (per magnet)")]
+    [Header("Raycast")]
+    [Tooltip("Physics2D layer mask used for the gating raycast (works in FixedDirectional mode)")]
+    public LayerMask raycastLayerMask = Physics2D.DefaultRaycastLayers;
+
+    [Header("Field Physics")]
     [Tooltip("Additional strength scale for this magnet (replaces globalK)")]
     public float strengthScale = 20f;
 
@@ -53,25 +57,28 @@ public class MagnetFieldSource : MonoBehaviour
         public int tileCount;
         public float effectiveRadius;
         public float strength;
-        // Вершины пути полигона в МИРОВЫХ координатах (для расстояния до границы)
+        // Polygon path vertices in WORLD space (for distance-to-boundary computation)
         public Vector2[] worldPath;
     }
     public List<Region> Regions { get; private set; } = new();
     
-    #if UNITY_EDITOR
     private void OnValidate()
     {
-        if (isActiveAndEnabled) Rebuild();
+        if (isActiveAndEnabled) 
+            Rebuild();
 
-        // Нормализуем направление (и защищаемся от нулевого вектора)
+        // Normalize direction (and guard against zero vector)
         if (fixedDirection.sqrMagnitude < 1e-6f)
             fixedDirection = Vector2.right;
         else
             fixedDirection = fixedDirection.normalized;
     }
 
-    private void OnTransformParentChanged() { if (isActiveAndEnabled) Rebuild(); }
-#endif
+    private void OnTransformParentChanged()
+    {
+        if (isActiveAndEnabled) 
+            Rebuild();
+    }
 
 
     private void Reset()
@@ -147,7 +154,7 @@ public class MagnetFieldSource : MonoBehaviour
             
             // Debug.Log($"Path {i}, {polarity.ToString()}: {tiles} tiles, {absArea} area, {strength} strength, {effRadius} effective radius");
 
-            // Также подготовим вершины контура в мировом пространстве для расчёта расстояния до границы
+            // Also prepare polygon vertices in world space for distance-to-boundary calculation
             Vector2[] pathWorld = new Vector2[n];
             for (int k = 0; k < n; k++)
                 pathWorld[k] = composite.transform.TransformPoint(pathLocal[k]);
@@ -163,7 +170,7 @@ public class MagnetFieldSource : MonoBehaviour
                 worldPath       = pathWorld
             });
         }
-        Debug.Log($"effRadiuses of each magnet: {string.Join(", ", Regions.ConvertAll(r => r.effectiveRadius.ToString("F2")))}, strengthScale: {strengthScale}");
+        // Debug.Log($"effRadiuses of each magnet: {string.Join(", ", Regions.ConvertAll(r => r.effectiveRadius.ToString("F2")))}, strengthScale: {strengthScale}");
     }
 
 
@@ -171,32 +178,32 @@ public class MagnetFieldSource : MonoBehaviour
     {
         StopAllCoroutines();
     }
-
-    /// <summary>
-    /// Расчёт вклада магнитной силы этого сканера в точке pos
-    /// с учётом полярности героя (+1/-1) и локальных настроек сканера.
-    /// </summary>
+    
+    /// Calculates this scanner's magnetic force contribution at position 'pos',
+    /// taking into account the hero polarity (+1/-1) and local scanner settings.
     public Vector2 GetForceAt(Vector2 pos, int heroPolarity)
     {
         Vector2 sum = Vector2.zero;
-        if (Regions == null || Regions.Count == 0) return sum;
+        if (Regions == null || Regions.Count == 0 || heroPolarity == 0) return sum;
 
         foreach (var r in Regions)
         {
-            // Общие данные от центроида — для радиального режима
-            Vector2 toRegion = r.centroid - pos;
-            float distToCentroid = toRegion.magnitude;
-
-            // Направление силы по умолчанию — радиально на регион
-            Vector2 dirN = distToCentroid > Mathf.Epsilon ? (toRegion / distToCentroid) : Vector2.right;
-
             if (fieldMode == MagnetFieldMode.Radial)
             {
+                
+                Vector2 fromRegion = pos - r.centroid;
+                float distToCentroid = fromRegion.magnitude;
+
+                // normalize the direction (away from the region)
+                Vector2 dirN = distToCentroid > Mathf.Epsilon ? (fromRegion / distToCentroid) : Vector2.right;
+                
                 if (distToCentroid < Mathf.Epsilon) continue;
                 if (maxInfluenceRadius > 0f && distToCentroid > maxInfluenceRadius + r.effectiveRadius)
                     continue;
-
-                float sign = heroPolarity * (r.polarity == MagnetPolarity.Red ? +1 : -1);
+                
+                // SAME polarities => +1 (push along dirN), OPPOSITE => -1 (pull against dirN)
+                int regionSign = (r.polarity == MagnetPolarity.Red) ? +1 : -1;
+                float sign = (heroPolarity == regionSign) ? +1f : -1f;
                 float distSoft = Mathf.Max(minDistance, distToCentroid - r.effectiveRadius * 0.5f);
                 float falloff = 1f / Mathf.Pow(1f + distSoft, Mathf.Max(0.0001f, falloffPower));
                 float magnitude = strengthScale * r.strength * falloff;
@@ -204,22 +211,28 @@ public class MagnetFieldSource : MonoBehaviour
             }
             else // FixedDirectional
             {
-                // Переопределяем направление силы фиксированным вектором
+                // Override force direction with a fixed vector
                 Vector3 dirWorld = new Vector3(fixedDirection.x, fixedDirection.y, 0f);
                 if (directionsInLocalSpace && transform)
                     dirWorld = transform.TransformDirection(dirWorld);
                 Vector2 push = new Vector2(dirWorld.x, dirWorld.y);
-                dirN = (push.sqrMagnitude > 1e-6f) ? push.normalized : Vector2.right;
+                Vector2 dirN = (push.sqrMagnitude > 1e-6f) ? push.normalized : Vector2.right;
+                
+                // Always one-sided via Physics2D Raycast along -dirN
+                float maxRay = (maxInfluenceRadius > 0f) ? maxInfluenceRadius : 1000f;
+                RaycastHit2D hit = Physics2D.Raycast(pos, -dirN, maxRay, raycastLayerMask);
+                if (!hit)
+                    continue; // no surface in front — no force
 
-                // Расстояние до ГРАНИЦЫ полигона в мировом пространстве
-                float distToBoundary = DistanceToPolygonEdges(pos, r.worldPath);
-
-                // Ограничение радиуса влияния считаем от границы, а не от центроида
-                if (maxInfluenceRadius > 0f && distToBoundary > maxInfluenceRadius)
+                // If a composite is assigned, ensure we hit exactly it (avoid foreign colliders)
+                if (composite && hit.collider != composite)
                     continue;
 
-                float sign = heroPolarity * (r.polarity == MagnetPolarity.Red ? +1 : -1);
-                float d = Mathf.Max(minDistance, distToBoundary);
+                float rayDistance = hit.distance;
+
+                int regionSign = (r.polarity == MagnetPolarity.Red) ? +1 : -1;
+                float sign = (heroPolarity == regionSign) ? +1f : -1f;
+                float d = Mathf.Max(minDistance, float.IsInfinity(rayDistance) ? 0f : rayDistance);
                 float falloff = 1f / Mathf.Pow(1f + d, Mathf.Max(0.0001f, falloffPower));
                 float magnitude = strengthScale * r.strength * falloff;
                 sum += dirN * (sign * magnitude);
@@ -229,7 +242,7 @@ public class MagnetFieldSource : MonoBehaviour
         return sum;
     }
 
-    // --- Геометрические утилиты для расстояния до границы ---
+    // Geometric utilities for distance to boundary
     private static float DistanceToPolygonEdges(Vector2 p, Vector2[] verts)
     {
         if (verts == null || verts.Length < 2)

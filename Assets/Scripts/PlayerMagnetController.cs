@@ -25,9 +25,9 @@ public class PlayerMagnetController : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _sr = GetComponent<SpriteRenderer>();
 
-        // Получаем действие инпута из общего InputSystem
+        // Fetch input action from the global InputSystem
         _magnetAction = InputSystem.actions?.FindAction("MagnetActivate");
-        // Кэшируем список всех доступных магнитов (тайлмап-сканеров) в сцене
+        // Cache the list of all available magnet field sources in the scene
         _scanners = FindObjectsByType<MagnetFieldSource>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         UpdateSpriteTint();
     }
@@ -71,7 +71,7 @@ public class PlayerMagnetController : MonoBehaviour
 
         if (!shouldApply || !_rb) return;
 
-        // Накапливаем силы от всех активных сканеров (пер-магнитная настройка)
+        // Accumulate forces from all active scanners (per-magnet settings)
         if (_scanners == null || _scanners.Length == 0)
         {
             _scanners = FindObjectsByType<MagnetFieldSource>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -91,7 +91,7 @@ public class PlayerMagnetController : MonoBehaviour
         Vector2 magForce = total * magnetForceScale;
         _rb.AddForce(magForce, ForceMode2D.Force);
 
-        // Небольшое демпфирование при сильном магнитном воздействии
+        // Slight damping under strong magnetic influence
         float magFactor = Mathf.Clamp01(magForce.magnitude / 50f);
         _rb.linearVelocity *= Mathf.Lerp(1f, 0.9f, magFactor);
     }
@@ -106,7 +106,7 @@ public class PlayerMagnetController : MonoBehaviour
         }
         else
         {
-            _sr.color = heroPolarity == 1 ? Color.cyan : Color.red;
+            _sr.color = heroPolarity == 1 ? Color.red : Color.cyan;
         }
     }
 }

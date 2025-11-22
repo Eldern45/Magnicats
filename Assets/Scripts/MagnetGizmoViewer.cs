@@ -5,18 +5,18 @@ public class MagnetGizmoViewer : MonoBehaviour
     [Header("Gizmos (visualization only)")]
     public bool drawGizmos = true;
     public Color gizmoColor = new(1, 1, 1, 0.35f);
-    [Tooltip("Рисовать внешний радиус влияния (maxInfluenceRadius + effectiveRadius)")]
+    [Tooltip("Draw outer influence radius (effectiveRadius + maxInfluenceRadius)")]
     public bool drawInfluenceRadius = true;
     public Color influenceColor = new(1f, 0.8f, 0.2f, 0.3f);
 
     [Header("Directional Gizmos")]
-    [Tooltip("Рисовать направление для FixedDirectional источников")]
+    [Tooltip("Draw direction arrow for FixedDirectional sources")]
     public bool drawDirection = true;
     public Color directionColor = new(0.2f, 1f, 0.2f, 0.9f);
-    [Tooltip("Длина стрелки направления (в единицах мира)")]
+    [Tooltip("Direction arrow length (world units)")]
     public float directionArrowLength = 2.0f;
 
-    // This component is now gizmo-only: no physics, no global coefficients, no registry.
+    // This component is gizmo-only: no physics, no global coefficients, no registry.
     private void OnDrawGizmosSelected()
     {
         if (!drawGizmos) return;
@@ -29,17 +29,23 @@ public class MagnetGizmoViewer : MonoBehaviour
             if (!s || s.Regions == null) continue;
             foreach (var r in s.Regions)
             {
-                // Внутренний «геометрический» радиус региона
+                // Inner "geometric" radius of the region
                 Gizmos.color = gizmoColor;
                 Gizmos.DrawWireSphere(r.centroid, r.effectiveRadius);
 
-                // Внешний радиус влияния поля для данного региона
-                if (!drawInfluenceRadius || !(s.maxInfluenceRadius > 0f)) continue;
-                float outer = r.effectiveRadius + s.maxInfluenceRadius;
-                Gizmos.color = influenceColor;
-                Gizmos.DrawWireSphere(r.centroid, outer);
+                // Precompute outer influence radius for later use (even if we don't draw it)
+                float outerInfluence = (s.maxInfluenceRadius > 0f)
+                    ? r.effectiveRadius + s.maxInfluenceRadius
+                    : r.effectiveRadius;
 
-                // Направление для FixedDirectional
+                // Outer field influence radius for this region (optional)
+                if (drawInfluenceRadius && s.maxInfluenceRadius > 0f)
+                {
+                    Gizmos.color = influenceColor;
+                    Gizmos.DrawWireSphere(r.centroid, outerInfluence);
+                }
+
+                // Direction for FixedDirectional
                 if (drawDirection && s.fieldMode == MagnetFieldMode.FixedDirectional)
                 {
                     Vector3 dirWorld = new Vector3(s.fixedDirection.x, s.fixedDirection.y, 0f);
@@ -52,7 +58,7 @@ public class MagnetGizmoViewer : MonoBehaviour
                         Vector3 end = start + dirWorld.normalized * Mathf.Max(0.1f, directionArrowLength);
                         Gizmos.color = directionColor;
                         Gizmos.DrawLine(start, end);
-                        // Простая «стрелка» — две короткие засечки
+                        // Simple arrow head — two short ticks
                         Vector3 side = Quaternion.AngleAxis(25f, Vector3.forward) * (-dirWorld.normalized);
                         Gizmos.DrawLine(end, end + side * 0.3f * Mathf.Max(0.1f, directionArrowLength));
                         side = Quaternion.AngleAxis(-25f, Vector3.forward) * (-dirWorld.normalized);

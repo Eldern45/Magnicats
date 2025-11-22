@@ -13,6 +13,9 @@ public class MagnetFieldSourceEditor : Editor
     SerializedProperty fixedDirection;
     SerializedProperty directionsInLocalSpace;
 
+    // FixedDirectional: raycast settings
+    SerializedProperty raycastLayerMask;
+
     SerializedProperty strengthScale;
     SerializedProperty falloffPower;
     SerializedProperty maxInfluenceRadius;
@@ -28,6 +31,8 @@ public class MagnetFieldSourceEditor : Editor
         fieldMode = serializedObject.FindProperty("fieldMode");
         fixedDirection = serializedObject.FindProperty("fixedDirection");
         directionsInLocalSpace = serializedObject.FindProperty("directionsInLocalSpace");
+
+        raycastLayerMask = serializedObject.FindProperty("raycastLayerMask");
 
         strengthScale = serializedObject.FindProperty("strengthScale");
         falloffPower = serializedObject.FindProperty("falloffPower");
@@ -45,8 +50,6 @@ public class MagnetFieldSourceEditor : Editor
         EditorGUILayout.PropertyField(tilemap);
         EditorGUILayout.PropertyField(baseStrengthPerTile);
 
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Field Mode", EditorStyles.boldLabel);
         EditorGUILayout.PropertyField(fieldMode);
 
         // Show FixedDirectional-specific options only when selected
@@ -55,11 +58,11 @@ public class MagnetFieldSourceEditor : Editor
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(fixedDirection, new GUIContent("Fixed Direction"));
             EditorGUILayout.PropertyField(directionsInLocalSpace, new GUIContent("Directions In Local Space"));
+            EditorGUILayout.PropertyField(raycastLayerMask, new GUIContent("Raycast Layer Mask"));
+            EditorGUI.indentLevel--;
             EditorGUI.indentLevel--;
         }
-
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Field Physics (per magnet)", EditorStyles.boldLabel);
+        
         EditorGUILayout.PropertyField(strengthScale);
         EditorGUILayout.PropertyField(falloffPower);
         EditorGUILayout.PropertyField(maxInfluenceRadius);
