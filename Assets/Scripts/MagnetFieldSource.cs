@@ -89,7 +89,11 @@ public class MagnetFieldSource : MonoBehaviour
 
     private void OnEnable()
     {
-        StartCoroutine(DelayedRebuild());
+        // In Play Mode delay by one frame to let physics/tilemap settle; in Edit Mode rebuild immediately
+        if (Application.isPlaying)
+            StartCoroutine(DelayedRebuild());
+        else
+            Rebuild();
     }
 
     private IEnumerator DelayedRebuild()

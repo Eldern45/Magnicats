@@ -26,7 +26,14 @@ public class MagnetGizmoViewer : MonoBehaviour
 
         foreach (var s in scanners)
         {
-            if (!s || s.Regions == null) continue;
+            if (!s) continue;
+            // Ensure regions exist in Edit Mode (if not built yet)
+            if (s.Regions == null || s.Regions.Count == 0)
+            {
+                s.Rebuild();
+                if (s.Regions == null || s.Regions.Count == 0)
+                    continue;
+            }
             foreach (var r in s.Regions)
             {
                 // Inner "geometric" radius of the region
