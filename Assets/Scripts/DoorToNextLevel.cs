@@ -13,6 +13,7 @@ public class DoorToNextLevel : MonoBehaviour
         if (nextLevelSceneName != null)
         {
             SceneManager.LoadScene(nextLevelSceneName);
+            GameController.Instance.CurrentLevel += 1;
         }
         else
         {
