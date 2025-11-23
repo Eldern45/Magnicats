@@ -159,6 +159,11 @@ MonoBehaviour:
   jumpForce: 22
   jumpBufferTime: 0.1
   coyoteTime: 0.12
+  canDoubleJump: 0
+  canDash: 0
+  dashSpeed: 30
+  dashDuration: 0.15
+  hasShield: 0
   boxSize: {x: 0.84, y: 0.15}
   castDistance: 0.85
   groundLayer:
