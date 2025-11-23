@@ -1,6 +1,3 @@
-// Updated PlayerMovement with Double Jump, Dash, and Shield
-// Abilities are one‑time use until refreshed by consumables.
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -8,6 +5,13 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer), typeof(Collider2D))]
 public class PlayerMovement : MonoBehaviour
 {
+    // --- Audio Settings ---
+    [Header("Audio")]
+    public AudioClipGroup jumpSound;
+    public AudioClipGroup landSound;
+    public AudioClipGroup dashSound;
+    public AudioClipGroup deathSound;
+
     // --- Movement Settings ---
     [Header("Movement")] public float moveSpeed = 8f;
     public float accelGround = 80f;
@@ -117,12 +121,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateGroundedState()
     {
+        bool wasGrounded = _isGrounded;
         _isGrounded = IsGrounded();
         _collider.sharedMaterial = _isGrounded ? groundMaterial : airMaterial;
         if (_isGrounded)
         {
             _lastGroundedTime = Time.time;
             doubleJumpAvailable = canDoubleJump; // refresh
+
+            if (!wasGrounded)
+                landSound?.Play();
         }
     }
 
@@ -167,6 +175,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, 0f);
         _rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        jumpSound?.Play();
     }
 
     // --- Dash ---
@@ -193,6 +202,7 @@ public class PlayerMovement : MonoBehaviour
 
         float direction = _sr.flipX ? -1f : 1f;
         _rb.linearVelocity = new Vector2(direction * dashSpeed, 0f);
+        dashSound?.Play();
     }
 
     private void ApplyDashMovement()
@@ -256,6 +266,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void RestartScene()
     {
+        deathSound?.Play();
         Destroy(gameObject);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
