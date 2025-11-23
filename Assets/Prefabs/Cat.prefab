@@ -133,6 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cec539f08783c74b9a3c7fa3399b24c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMagnetController
+  polaritySound: {fileID: 11400000, guid: 4219a60c3da594b3ea4b8e6727df58f4, type: 2}
   heroPolarity: 1
   magnetForceScale: 1
   clickMode: 1
@@ -153,6 +154,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cce5788beefaf1942ae85a366e3dd3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlaeyrMovement
+  jumpSound: {fileID: 11400000, guid: 8f2d8eb98359040de86a77bca0bdd0f6, type: 2}
+  landSound: {fileID: 11400000, guid: 06d540ce031b44705949676ce2cca677, type: 2}
+  dashSound: {fileID: 11400000, guid: 4dea5da69ee164592b15496cc8610531, type: 2}
+  deathSound: {fileID: 11400000, guid: 97b82dcf226594f5caa8d448eef446e8, type: 2}
   moveSpeed: 14
   accelGround: 75
   accelAir: 60

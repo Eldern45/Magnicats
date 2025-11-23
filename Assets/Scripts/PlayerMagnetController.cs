@@ -4,6 +4,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerMagnetController : MonoBehaviour
 {
+    // --- Audio Settings ---
+    [Header("Audio")]
+    public AudioClipGroup polaritySound;
+
     // --- Magnet Settings ---
     [Header("Magnet")]
     [SerializeField] private int heroPolarity = +1;
@@ -67,6 +71,7 @@ public class PlayerMagnetController : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
 
+        polaritySound?.Play();
         UpdateSpriteTint();
     }
 

@@ -1,2 +1,15 @@
 fileFormatVersion: 2
 guid: 0cec539f08783c74b9a3c7fa3399b24c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - polaritySound: {fileID: 11400000, guid: 4219a60c3da594b3ea4b8e6727df58f4, type: 2}
+  - neutralSprite: {instanceID: 0}
+  - redSprite: {instanceID: 0}
+  - blueSprite: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
