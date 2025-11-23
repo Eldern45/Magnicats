@@ -10,13 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b73102e25d6b84b3f8129af7f9cbd199, type: 3}
-  m_Name: Polarity
+  m_Name: Death
   m_EditorClassIdentifier: Assembly-CSharp::AudioClipGroup
   VolumeMin: 1
   VolumeMax: 1
   PitchMin: 1
   PitchMax: 1
   Cooldown: 0.1
-  Clips:
-  - {fileID: 8300000, guid: 9eaec1610d69b4f1fa79c3682a42d1a3, type: 3}
-  - {fileID: 8300000, guid: d7e4f9445e67b49dfb8541276c9cd783, type: 3}
+  Clips: []

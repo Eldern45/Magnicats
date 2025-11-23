@@ -153,3 +153,4 @@ MonoBehaviour:
   nextLevelSceneName: 
   closedDoorSprite: {fileID: 1908771263, guid: b971eb7e710a3844d8c6bce05c32e10e, type: 3}
   openDoorSprite: {fileID: -2143192546, guid: b971eb7e710a3844d8c6bce05c32e10e, type: 3}
+  doorSound: {fileID: 11400000, guid: 60d06199c8d9745a6b6416bdcbff4a57, type: 2}

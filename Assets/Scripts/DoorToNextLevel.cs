@@ -8,10 +8,14 @@ public class DoorToNextLevel : MonoBehaviour
     public Sprite closedDoorSprite;
     public Sprite openDoorSprite;
 
+    [Header("Audio")]
+    public AudioClipGroup doorSound;
+
     public void GoToNextLevel()
     {
         if (nextLevelSceneName != null)
         {
+            doorSound?.Play();
             SceneManager.LoadScene(nextLevelSceneName);
             GameController.Instance.CurrentLevel += 1;
         }
