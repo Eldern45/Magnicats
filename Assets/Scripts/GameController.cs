@@ -6,6 +6,14 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance { get; private set; }
 
+    [Header("Panels")]
+    [SerializeField] private GameObject startMenuPanel;
+    [SerializeField] private GameObject optionsPanel;
+
+    [Header("Buttons")]
+    [SerializeField] private Button optionsButton;
+    [SerializeField] private Button backFromOptionsButton;
+
     private Button playButton;
     private Button exitButton;
     public float TotalTime { get; private set; }
@@ -58,6 +66,12 @@ public class GameController : MonoBehaviour
             exitButton.onClick.RemoveAllListeners();
             exitButton.onClick.AddListener(QuitGame);
         }
+
+        startMenuPanel.SetActive(true);
+        optionsPanel.SetActive(false);
+
+        optionsButton.onClick.AddListener(ShowOptions);
+        backFromOptionsButton.onClick.AddListener(HideOptions);
     }
     
     void Update()
@@ -106,5 +120,17 @@ public class GameController : MonoBehaviour
         #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
         #endif
+    }
+
+    void ShowOptions()
+    {
+        startMenuPanel.SetActive(false);
+        optionsPanel.SetActive(true);
+    }
+
+    void HideOptions()
+    {
+        optionsPanel.SetActive(false);
+        startMenuPanel.SetActive(true);
     }
 }
