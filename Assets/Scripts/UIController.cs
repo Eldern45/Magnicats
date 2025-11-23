@@ -62,6 +62,15 @@ public class UIController : MonoBehaviour
                 TogglePauseMenu();
             }
         }
+
+        if (Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame)
+        {
+            if (SceneManager.GetActiveScene().name != "StartMenu")
+            {
+                TogglePauseMenu();
+            }
+        }
+
     }
     
     public void SpawnHUD()
