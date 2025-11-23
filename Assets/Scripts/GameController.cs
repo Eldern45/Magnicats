@@ -7,12 +7,12 @@ public class GameController : MonoBehaviour
     public static GameController Instance { get; private set; }
 
     [Header("Panels")]
-    [SerializeField] private GameObject startMenuPanel;
-    [SerializeField] private GameObject optionsPanel;
+    private GameObject startMenuPanel;
+    private GameObject optionsPanel;
 
     [Header("Buttons")]
-    [SerializeField] private Button optionsButton;
-    [SerializeField] private Button backFromOptionsButton;
+    private Button optionsButton;
+    private Button backFromOptionsButton;
 
     private Button playButton;
     private Button demoLevelButton;
@@ -28,14 +28,13 @@ public class GameController : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             SceneManager.sceneLoaded += OnSceneLoaded;
+            SetupButtons();
         }
         else
         {
             Destroy(gameObject);
             return;
         }
-
-        SetupButtons();
     }
 
     void OnDestroy()
@@ -53,7 +52,21 @@ public class GameController : MonoBehaviour
 
     void SetupButtons()
     {
-        playButton = GameObject.Find("PlayButton")?.GetComponent<Button>();
+        var canvas = GameObject.Find("StartMenu");
+        if (canvas == null)
+        {
+            Debug.LogWarning("GameController: Canvas not found in StartMenu scene.");
+            return;
+        }
+
+        startMenuPanel = canvas.transform.Find("StartPanel")?.gameObject;
+        optionsPanel   = canvas.transform.Find("OptionsPanel")?.gameObject;
+
+        playButton      = canvas.transform.Find("StartPanel/PlayButton")?.GetComponent<Button>();
+        demoLevelButton = canvas.transform.Find("StartPanel/DemoLevelButton")?.GetComponent<Button>();
+        exitButton      = canvas.transform.Find("StartPanel/ExitButton")?.GetComponent<Button>();
+        optionsButton   = canvas.transform.Find("StartPanel/OptionsButton")?.GetComponent<Button>();
+        backFromOptionsButton = canvas.transform.Find("OptionsPanel/BackButton")?.GetComponent<Button>();
 
         if (playButton != null)
         {
@@ -61,31 +74,32 @@ public class GameController : MonoBehaviour
             playButton.onClick.AddListener(StartGame);
         }
 
-        demoLevelButton = GameObject.Find("DemoLevelButton")?.GetComponent<Button>();
         if (demoLevelButton != null)
         {
-            demoLevelButton.onClick.RemoveAllListeners();
-            demoLevelButton.onClick.AddListener(() =>
-            {
-                ResetTimer();
-                CurrentLevel = 0;
-                ResumeGame();
-                SceneManager.LoadScene("DemoLevel");
-            });
+            demoLevelButton.onClick.RemoveListener(StartDemoLevel);
+            demoLevelButton.onClick.AddListener(StartDemoLevel);
         }
 
-        exitButton = GameObject.Find("ExitButton")?.GetComponent<Button>();
         if (exitButton != null)
         {
             exitButton.onClick.RemoveAllListeners();
             exitButton.onClick.AddListener(QuitGame);
         }
 
-        startMenuPanel.SetActive(true);
-        optionsPanel.SetActive(false);
+        if (optionsButton != null)
+        {
+            optionsButton.onClick.RemoveListener(ShowOptions);
+            optionsButton.onClick.AddListener(ShowOptions);
+        }
 
-        optionsButton.onClick.AddListener(ShowOptions);
-        backFromOptionsButton.onClick.AddListener(HideOptions);
+        if (backFromOptionsButton != null)
+        {
+            backFromOptionsButton.onClick.RemoveListener(HideOptions);
+            backFromOptionsButton.onClick.AddListener(HideOptions);
+        }
+
+        if (startMenuPanel != null) startMenuPanel.SetActive(true);
+        if (optionsPanel != null) optionsPanel.SetActive(false);
     }
 
     void Update()
@@ -146,5 +160,13 @@ public class GameController : MonoBehaviour
     {
         optionsPanel.SetActive(false);
         startMenuPanel.SetActive(true);
+    }
+
+    private void StartDemoLevel()
+    {
+        ResetTimer();
+        CurrentLevel = 0;
+        ResumeGame();
+        SceneManager.LoadScene("DemoLevel");
     }
 }
