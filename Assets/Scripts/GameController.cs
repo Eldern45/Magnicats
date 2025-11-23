@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GameController : MonoBehaviour
 {
@@ -100,6 +101,11 @@ public class GameController : MonoBehaviour
 
         if (startMenuPanel != null) startMenuPanel.SetActive(true);
         if (optionsPanel != null) optionsPanel.SetActive(false);
+
+        if (playButton != null && EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(playButton.gameObject);
+        }
     }
 
     void Update()
@@ -154,12 +160,20 @@ public class GameController : MonoBehaviour
     {
         startMenuPanel.SetActive(false);
         optionsPanel.SetActive(true);
+        if (backFromOptionsButton != null && EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(backFromOptionsButton.gameObject);
+        }
     }
 
     void HideOptions()
     {
         optionsPanel.SetActive(false);
         startMenuPanel.SetActive(true);
+        if (playButton != null && EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(playButton.gameObject);
+        }
     }
 
     private void StartDemoLevel()

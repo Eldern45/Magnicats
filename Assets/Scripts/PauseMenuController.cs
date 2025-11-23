@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
+using UnityEngine.EventSystems;
 
 public class PauseMenuController : MonoBehaviour
 {
@@ -35,6 +36,7 @@ public class PauseMenuController : MonoBehaviour
         SetMixerVolume(savedVolume);
 
         volumeSlider.onValueChanged.AddListener(OnVolumeChanged);
+        EventSystem.current.SetSelectedGameObject(optionsButton.gameObject);
     }
 
     void SetMixerVolume(float value)
@@ -69,12 +71,14 @@ public class PauseMenuController : MonoBehaviour
     {
         pausePanel.SetActive(false);
         optionsPanel.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(backFromOptionsButton.gameObject);
     }
 
     void HideOptions()
     {
         optionsPanel.SetActive(false);
         pausePanel.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(optionsButton.gameObject);
     }
 
 }
