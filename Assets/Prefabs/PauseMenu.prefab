@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 742017086149692470}
   - component: {fileID: 7173557918612285552}
   - component: {fileID: 1283731833665969661}
+  - component: {fileID: 1879351353032334482}
   m_Layer: 5
   m_Name: OptionsButton
   m_TagString: Untagged
@@ -257,6 +258,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1879351353032334482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1304725104053281663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b97f1d9474d8c49be821a87a8605c035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuClickSound
+  clickSound: {fileID: 11400000, guid: a1ce66e2950594e9b864321dc0d8160d, type: 2}
 --- !u!1 &1387342084262985398
 GameObject:
   m_ObjectHideFlags: 0
@@ -405,6 +419,7 @@ GameObject:
   - component: {fileID: 2039753972458965781}
   - component: {fileID: 1225222619014954965}
   - component: {fileID: 7513168870422908473}
+  - component: {fileID: 267853383987511005}
   m_Layer: 5
   m_Name: RestartButton
   m_TagString: Untagged
@@ -514,6 +529,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &267853383987511005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1916981631783820567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b97f1d9474d8c49be821a87a8605c035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuClickSound
+  clickSound: {fileID: 11400000, guid: a1ce66e2950594e9b864321dc0d8160d, type: 2}
 --- !u!1 &2141424360168590630
 GameObject:
   m_ObjectHideFlags: 0
@@ -782,6 +810,7 @@ GameObject:
   - component: {fileID: 1220557337247360971}
   - component: {fileID: 8481130095581474908}
   - component: {fileID: 266744993117260522}
+  - component: {fileID: -8222515131378829927}
   m_Layer: 5
   m_Name: PauseMenu
   m_TagString: Untagged
@@ -893,6 +922,50 @@ MonoBehaviour:
   optionsButton: {fileID: 1283731833665969661}
   backFromOptionsButton: {fileID: 9164182840658261173}
   audioMixer: {fileID: 24100000, guid: 6623cd05e287c424389f097da5b5aa04, type: 2}
+--- !u!114 &-8222515131378829927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2790985232839223667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 0}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3936207288833433348
 GameObject:
   m_ObjectHideFlags: 0
@@ -1041,6 +1114,7 @@ GameObject:
   - component: {fileID: 5535562036392605942}
   - component: {fileID: 2387391974566067742}
   - component: {fileID: 5300437976369493902}
+  - component: {fileID: 8087997977608701207}
   m_Layer: 5
   m_Name: MainMenuButton
   m_TagString: Untagged
@@ -1150,6 +1224,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8087997977608701207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4172353422796489194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b97f1d9474d8c49be821a87a8605c035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuClickSound
+  clickSound: {fileID: 11400000, guid: a1ce66e2950594e9b864321dc0d8160d, type: 2}
 --- !u!1 &4191685029822784946
 GameObject:
   m_ObjectHideFlags: 0
