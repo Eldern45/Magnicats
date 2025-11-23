@@ -15,11 +15,12 @@ public class GameController : MonoBehaviour
     [SerializeField] private Button backFromOptionsButton;
 
     private Button playButton;
+    private Button demoLevelButton;
     private Button exitButton;
     public float TotalTime { get; private set; }
     public int CurrentLevel { get; set; }
     public bool IsPaused { get; private set; }
-    
+
     void Awake()
     {
         if (Instance == null)
@@ -53,11 +54,24 @@ public class GameController : MonoBehaviour
     void SetupButtons()
     {
         playButton = GameObject.Find("PlayButton")?.GetComponent<Button>();
-        
+
         if (playButton != null)
         {
             playButton.onClick.RemoveListener(StartGame);
             playButton.onClick.AddListener(StartGame);
+        }
+
+        demoLevelButton = GameObject.Find("DemoLevelButton")?.GetComponent<Button>();
+        if (demoLevelButton != null)
+        {
+            demoLevelButton.onClick.RemoveAllListeners();
+            demoLevelButton.onClick.AddListener(() =>
+            {
+                ResetTimer();
+                CurrentLevel = 0;
+                ResumeGame();
+                SceneManager.LoadScene("DemoLevel");
+            });
         }
 
         exitButton = GameObject.Find("ExitButton")?.GetComponent<Button>();
@@ -73,7 +87,7 @@ public class GameController : MonoBehaviour
         optionsButton.onClick.AddListener(ShowOptions);
         backFromOptionsButton.onClick.AddListener(HideOptions);
     }
-    
+
     void Update()
     {
         if (!IsPaused)
@@ -81,19 +95,19 @@ public class GameController : MonoBehaviour
             TotalTime += Time.deltaTime;
         }
     }
-    
+
     public void PauseGame()
     {
         IsPaused = true;
         Time.timeScale = 0f;
     }
-    
+
     public void ResumeGame()
     {
         IsPaused = false;
         Time.timeScale = 1f;
     }
-    
+
     public void ResetTimer()
     {
         TotalTime = 0f;
@@ -107,7 +121,7 @@ public class GameController : MonoBehaviour
 
         SceneManager.LoadScene("Level1New");
     }
-    
+
     public void ReturnToMainMenu()
     {
         SceneManager.LoadScene("StartMenu");
@@ -117,9 +131,9 @@ public class GameController : MonoBehaviour
     {
         Application.Quit();
 
-        #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-        #endif
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 
     void ShowOptions()

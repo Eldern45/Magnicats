@@ -151,3 +151,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
   itemType: 0
+  pickupSound: {fileID: 11400000, guid: d7861cc6acb7b4b3396a255d798e12b8, type: 2}

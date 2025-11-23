@@ -11,6 +11,9 @@ public class ConsumableItem : MonoBehaviour
 
     public ConsumableType itemType;
 
+    [Header("Audio")]
+    public AudioClipGroup pickupSound;
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         PlayerMovement player = other.GetComponent<PlayerMovement>();
@@ -31,6 +34,7 @@ public class ConsumableItem : MonoBehaviour
                     Debug.Log("Shield Consumed");
                     break;
             }
+            pickupSound?.Play();
             Destroy(gameObject);
         }
     }
