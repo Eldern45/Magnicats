@@ -1,3 +1,6 @@
+// Updated PlayerMovement with Double Jump, Dash, and Shield
+// Abilities are one‑time use until refreshed by consumables.
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -6,24 +9,40 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
     // --- Movement Settings ---
-    [Header("Movement")]
-    [SerializeField] private float moveSpeed = 8f;
-    [SerializeField] private float accelGround = 80f;
-    [SerializeField] private float accelAir = 60f;
+    [Header("Movement")] public float moveSpeed = 8f;
+    public float accelGround = 80f;
+    public float accelAir = 60f;
     private const float DeadZone = 0.1f;
 
     // --- Jump Settings ---
-    [Header("Jump")]
-    [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private float jumpBufferTime = 0.2f;
-    [SerializeField] private float coyoteTime = 0.12f;
-
+    [Header("Jump")] public float jumpForce = 5f;
+    public float jumpBufferTime = 0.2f;
+    public float coyoteTime = 0.12f;
     private float _lastJumpPressedTime = float.NegativeInfinity;
     private float _lastGroundedTime = float.NegativeInfinity;
 
-    // --- Input Actions ---
+    // --- Abilities ---
+    [Header("Abilities (One-Time)")]
+    public bool canDoubleJump = false;
+    private bool doubleJumpAvailable = false;
+
+    public bool canDash = false;
+    public float dashSpeed = 20f;
+    public float dashDuration = 0.15f;
+    private bool dashAvailable = false;
+    private bool isDashing = false;
+    private float dashEndTime = 0f;
+
+    public bool hasShield = false;
+    private bool shieldActive = false;
+
+    private bool isKnockedBack = false;
+    private float knockbackEndTime = 0f;
+
+    // --- Input ---
     private InputAction _moveAction;
     private InputAction _jumpAction;
+    private InputAction _dashAction;
     private Vector2 _moveInput;
 
     // --- Components ---
@@ -32,21 +51,16 @@ public class PlayerMovement : MonoBehaviour
     private Collider2D _collider;
 
     // --- Ground Check ---
-    [Header("Ground Check")]
-    [SerializeField] private Vector2 boxSize = new(0.5f, 0.1f);
-    [SerializeField] private float castDistance = 0.1f;
-    [SerializeField] private LayerMask groundLayer;
+    [Header("Ground Check")] public Vector2 boxSize = new(0.5f, 0.1f);
+    public float castDistance = 0.1f;
+    public LayerMask groundLayer;
     private bool _isGrounded;
 
     // --- Physics Materials ---
-    [Header("Physics Materials")]
-    [SerializeField] private PhysicsMaterial2D groundMaterial;
-    [SerializeField] private PhysicsMaterial2D airMaterial;
+    [Header("Physics Materials")] public PhysicsMaterial2D groundMaterial;
+    public PhysicsMaterial2D airMaterial;
 
-    // --- Magnet Component ---
     private PlayerMagnetController _magnetController;
-
-    // --- Unity Events ---
 
     private void Awake()
     {
@@ -56,22 +70,31 @@ public class PlayerMovement : MonoBehaviour
 
         _moveAction = InputSystem.actions.FindAction("Move");
         _jumpAction = InputSystem.actions.FindAction("Jump");
+        _dashAction = InputSystem.actions.FindAction("Dash");
+
         _magnetController = GetComponent<PlayerMagnetController>();
     }
 
     private void Update()
     {
         if (GameController.Instance != null && GameController.Instance.IsPaused) return;
+
         ReadInput();
         HandleJumpBuffer();
         UpdateSpriteFacing();
+        HandleDashInput();
     }
 
     private void FixedUpdate()
     {
         UpdateGroundedState();
+        UpdateKnockbackState();
         ApplyMovement();
-        HandleJumpExecution();
+
+        if (!isDashing)
+            HandleJumpExecution();
+        else
+            ApplyDashMovement();
     }
 
     // --- Input Handling ---
@@ -83,8 +106,6 @@ public class PlayerMovement : MonoBehaviour
         if (_jumpAction.WasPressedThisFrame())
             _lastJumpPressedTime = Time.time;
     }
-
-    // Magnet input and force are handled by PlayerMagnetController component now
 
     private void UpdateSpriteFacing()
     {
@@ -98,11 +119,17 @@ public class PlayerMovement : MonoBehaviour
     {
         _isGrounded = IsGrounded();
         _collider.sharedMaterial = _isGrounded ? groundMaterial : airMaterial;
-        if (_isGrounded) _lastGroundedTime = Time.time;
+        if (_isGrounded)
+        {
+            _lastGroundedTime = Time.time;
+            doubleJumpAvailable = canDoubleJump; // refresh
+        }
     }
 
     private void ApplyMovement()
     {
+        if (isDashing) return;
+
         float targetVx = Mathf.Abs(_moveInput.x) > DeadZone ? _moveInput.x * moveSpeed : 0f;
         float currentVx = _rb.linearVelocity.x;
         float accel = (_isGrounded ? accelGround : accelAir) * Mathf.Sign(targetVx - currentVx);
@@ -116,11 +143,23 @@ public class PlayerMovement : MonoBehaviour
         bool bufferedJump = Time.time <= _lastJumpPressedTime + jumpBufferTime;
         bool canCoyote = Time.time <= _lastGroundedTime + coyoteTime;
 
-        if (bufferedJump && (_isGrounded || canCoyote))
+        if (bufferedJump)
         {
-            Jump();
-            _lastJumpPressedTime = float.NegativeInfinity;
-            _lastGroundedTime = float.NegativeInfinity;
+            // normal jump
+            if (_isGrounded || canCoyote)
+            {
+                Jump();
+                _lastJumpPressedTime = float.NegativeInfinity;
+                _lastGroundedTime = float.NegativeInfinity;
+            }
+            // double jump
+            else if (doubleJumpAvailable)
+            {
+                doubleJumpAvailable = false;
+                canDoubleJump = false; // remove ability after use
+                Jump();
+                _lastJumpPressedTime = float.NegativeInfinity;
+            }
         }
     }
 
@@ -130,22 +169,71 @@ public class PlayerMovement : MonoBehaviour
         _rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
-    // Magnet force is handled by PlayerMagnetController component now
+    // --- Dash ---
 
-    // --- Ground Check ---
-
-    private bool IsGrounded()
+    private void HandleDashInput()
     {
-        return Physics2D.BoxCast(transform.position, boxSize, 0f, Vector2.down, castDistance, groundLayer);
+        if (canDash && !isDashing && (_dashAction?.WasPressedThisFrame() ?? false))
+        {
+            dashAvailable = true;
+        }
+
+        if (dashAvailable)
+        {
+            StartDash();
+            dashAvailable = false;
+        }
     }
 
-    // --- Collisions / Triggers ---
+    private void StartDash()
+    {
+        isDashing = true;
+        dashEndTime = Time.time + dashDuration;
+        canDash = false; // remove ability after use
+
+        float direction = _sr.flipX ? -1f : 1f;
+        _rb.linearVelocity = new Vector2(direction * dashSpeed, 0f);
+    }
+
+    private void ApplyDashMovement()
+    {
+        if (Time.time >= dashEndTime)
+        {
+            isDashing = false;
+        }
+    }
+
+    private void UpdateKnockbackState()
+    {
+        if (isKnockedBack && Time.time >= knockbackEndTime)
+        {
+            isKnockedBack = false;
+        }
+    }
+
+    // --- Shield Collision Handling ---
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Hazards"))
         {
-            RestartScene();
+            if (shieldActive)
+            {
+                shieldActive = false;
+                hasShield = false; // remove ability after use
+
+                // knockback - use closest point on hazard for accurate direction
+                Vector2 playerPos = transform.position;
+                Vector2 hazardPoint = other.ClosestPoint(playerPos);
+                Vector2 knockDir = (playerPos - hazardPoint).normalized;
+                _rb.linearVelocity = knockDir * 20f;
+                isKnockedBack = true;
+                knockbackEndTime = Time.time + 0.3f;
+            }
+            else
+            {
+                RestartScene();
+            }
         }
         else if (other.CompareTag("DoorToNextLevel"))
         {
@@ -153,7 +241,18 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // --- Utilities ---
+    // PUBLIC API for consumables
+    public void GrantDoubleJump()
+    {
+        canDoubleJump = true;
+        doubleJumpAvailable = true;
+    }
+    public void GrantDash() => canDash = true;
+    public void GrantShield()
+    {
+        hasShield = true;
+        shieldActive = true;
+    }
 
     private void RestartScene()
     {
@@ -161,7 +260,10 @@ public class PlayerMovement : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    // Sprite tint related to magnet is handled by PlayerMagnetController component now
+    private bool IsGrounded()
+    {
+        return Physics2D.BoxCast(transform.position, boxSize, 0f, Vector2.down, castDistance, groundLayer);
+    }
 
     private void OnDrawGizmos()
     {
