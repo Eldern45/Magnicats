@@ -17,7 +17,7 @@ public class DoorToNextLevel : MonoBehaviour
         {
             doorSound?.Play();
             SceneManager.LoadScene(nextLevelSceneName);
-            GameController.Instance.CurrentLevel += 1;
+            if (nextLevelSceneName != "WinScreen") GameController.Instance.CurrentLevel += 1;
         }
         else
         {

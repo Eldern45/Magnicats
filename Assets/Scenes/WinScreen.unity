@@ -463,6 +463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WinScreen
   timeText: {fileID: 1062162669}
+  winSound: {fileID: 11400000, guid: e3a05a19f96eb4a03a258092c3084190, type: 2}
 --- !u!1 &1062162668
 GameObject:
   m_ObjectHideFlags: 0

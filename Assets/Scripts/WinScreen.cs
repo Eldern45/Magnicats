@@ -5,6 +5,9 @@ public class WinScreen : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI timeText;
 
+    [Header("Audio")]
+    public AudioClipGroup winSound;
+
     void Start()
     {
         if (GameController.Instance != null)
@@ -12,6 +15,7 @@ public class WinScreen : MonoBehaviour
             float total = GameController.Instance.TotalTime;
             timeText.text = "Time: " + FormatTime(total);
             GameController.Instance.PauseGame();
+            winSound?.Play();
         }
     }
 
