@@ -166,7 +166,7 @@ MonoBehaviour:
   coyoteTime: 0.12
   canDoubleJump: 0
   canDash: 0
-  dashSpeed: 30
+  dashSpeed: 35
   dashDuration: 0.15
   hasShield: 0
   boxSize: {x: 0.84, y: 0.15}

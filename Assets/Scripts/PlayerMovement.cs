@@ -136,12 +136,23 @@ public class PlayerMovement : MonoBehaviour
 
     private void ApplyMovement()
     {
-        if (isDashing) return;
-
         float targetVx = Mathf.Abs(_moveInput.x) > DeadZone ? _moveInput.x * moveSpeed : 0f;
         float currentVx = _rb.linearVelocity.x;
-        float accel = (_isGrounded ? accelGround : accelAir) * Mathf.Sign(targetVx - currentVx);
 
+        // During dash, only allow control if moving against the dash direction
+        if (isDashing)
+        {
+            // Only apply deceleration if trying to move opposite to current velocity
+            if (Mathf.Sign(targetVx - currentVx) != Mathf.Sign(currentVx) && Mathf.Abs(currentVx) > moveSpeed)
+            {
+                float dashAccel = (_isGrounded ? accelGround : accelAir) * Mathf.Sign(targetVx - currentVx);
+                float dashVx = Mathf.MoveTowards(currentVx, targetVx, Mathf.Abs(dashAccel) * Time.fixedDeltaTime);
+                _rb.linearVelocity = new Vector2(dashVx, _rb.linearVelocity.y);
+            }
+            return;
+        }
+
+        float accel = (_isGrounded ? accelGround : accelAir) * Mathf.Sign(targetVx - currentVx);
         float newVx = Mathf.MoveTowards(currentVx, targetVx, Mathf.Abs(accel) * Time.fixedDeltaTime);
         _rb.linearVelocity = new Vector2(newVx, _rb.linearVelocity.y);
     }
@@ -201,7 +212,7 @@ public class PlayerMovement : MonoBehaviour
         canDash = false; // remove ability after use
 
         float direction = _sr.flipX ? -1f : 1f;
-        _rb.linearVelocity = new Vector2(direction * dashSpeed, 0f);
+        _rb.linearVelocity = new Vector2(direction * dashSpeed, 12f);
         dashSound?.Play();
     }
 
