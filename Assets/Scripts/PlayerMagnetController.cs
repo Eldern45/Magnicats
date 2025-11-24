@@ -21,6 +21,23 @@ public class PlayerMagnetController : MonoBehaviour
     [SerializeField] private Sprite redSprite;       //  +1
     [SerializeField] private Sprite blueSprite;      //  -1
 
+    public enum HeroColor
+    {
+        Neutral,
+        Red,
+        Blue
+    }
+    public HeroColor CurrentColor
+    {
+        get
+        {
+            if (clickMode == MagnetClickMode.ToggleOnOff && !magnetEnabled)
+                return HeroColor.Neutral;
+
+            return heroPolarity == 1 ? HeroColor.Red : HeroColor.Blue;
+        }
+    }
+
     public enum MagnetClickMode { TogglePolarity, ToggleOnOff }
 
     // --- Components ---

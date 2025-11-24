@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4831680530437004395}
   - component: {fileID: 627456879280969052}
   - component: {fileID: 5167381261917030589}
+  - component: {fileID: 7981258094554657107}
   m_Layer: 0
   m_Name: Cat
   m_TagString: Untagged
@@ -158,6 +159,7 @@ MonoBehaviour:
   landSound: {fileID: 11400000, guid: 06d540ce031b44705949676ce2cca677, type: 2}
   dashSound: {fileID: 11400000, guid: 4dea5da69ee164592b15496cc8610531, type: 2}
   deathSound: {fileID: 11400000, guid: 97b82dcf226594f5caa8d448eef446e8, type: 2}
+  _anim: {fileID: 0}
   moveSpeed: 14
   accelGround: 75
   accelAir: 60
@@ -222,3 +224,25 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.9641104, y: 1.7551007}
   m_EdgeRadius: 0
+--- !u!95 &7981258094554657107
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3276537861509153639}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2863288d56849484d8a730b82bb4eea3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

@@ -12,6 +12,10 @@ public class PlayerMovement : MonoBehaviour
     public AudioClipGroup dashSound;
     public AudioClipGroup deathSound;
 
+    // --- Animation Settings ---
+    [Header("Animation")]
+    [SerializeField] private Animator _anim;
+
     // --- Movement Settings ---
     [Header("Movement")] public float moveSpeed = 8f;
     public float accelGround = 80f;
@@ -77,6 +81,9 @@ public class PlayerMovement : MonoBehaviour
         _dashAction = InputSystem.actions.FindAction("Dash");
 
         _magnetController = GetComponent<PlayerMagnetController>();
+
+        if (_anim == null)
+            _anim = GetComponent<Animator>();
     }
 
     private void Update()
@@ -87,6 +94,7 @@ public class PlayerMovement : MonoBehaviour
         HandleJumpBuffer();
         UpdateSpriteFacing();
         HandleDashInput();
+        UpdateAnimationState();
     }
 
     private void FixedUpdate()
@@ -115,6 +123,51 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Mathf.Abs(_moveInput.x) > DeadZone)
             _sr.flipX = _moveInput.x < 0f;
+    }
+
+    private void UpdateAnimationState()
+    {
+        if (_anim == null) return;
+
+        // Decide which color suffix to use
+        string colorSuffix = "Red";
+
+        if (_magnetController != null)
+        {
+            switch (_magnetController.CurrentColor)
+            {
+                case PlayerMagnetController.HeroColor.Neutral:
+                    colorSuffix = "Gray";
+                    break;
+                case PlayerMagnetController.HeroColor.Red:
+                    colorSuffix = "Red";
+                    break;
+                case PlayerMagnetController.HeroColor.Blue:
+                    colorSuffix = "Blue";
+                    break;
+            }
+        }
+
+        bool isMovingHoriz = Mathf.Abs(_moveInput.x) > DeadZone && _isGrounded;
+        bool inAir = !_isGrounded;
+
+        // Build state name like "Walk_Red", "Jump_Blue", etc.
+        string stateName;
+
+        if (inAir)
+        {
+            stateName = $"Jump_{colorSuffix}";
+        }
+        else if (isMovingHoriz)
+        {
+            stateName = $"Walk_{colorSuffix}";
+        }
+        else
+        {
+            stateName = $"Idle_{colorSuffix}";
+        }
+
+        _anim.Play(stateName);
     }
 
     // --- Movement & Jumping ---
