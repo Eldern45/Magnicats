@@ -37,6 +37,9 @@ public class PlayerMagnetController : MonoBehaviour
             return heroPolarity == 1 ? HeroColor.Red : HeroColor.Blue;
         }
     }
+    
+    // Expose the underlying polarity for VFX (ignoring enabled state)
+    public int VisualPolarity => heroPolarity;
 
     public enum MagnetClickMode { TogglePolarity, ToggleOnOff }
 

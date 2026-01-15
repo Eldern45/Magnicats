@@ -31,6 +31,19 @@ public class MagnetFieldSource : MonoBehaviour
     [Tooltip("Interpret fixedDirection in the source's local space")] 
     public bool directionsInLocalSpace = true;
 
+    [Header("Visual Effects")]
+    public GameObject vfxPrefab;
+    [Tooltip("Overrides the Radius Multiplier of the VFX prefab")]
+    public float vfxRadiusMultiplier = 1.0f;
+    [Tooltip("Overrides the Width Multiplier of the VFX prefab (Directional only)")]
+    public float vfxWidthMultiplier = 1.1f;
+    public float vfxSpeed = 2.0f;
+    [Range(0f, 1f)]
+    [Tooltip("Overrides the Opacity of the VFX prefab")]
+    public float vfxOpacity = 0.5f;
+
+    private List<MagnetVFX> spawnedVFX = new();
+
     [Header("Raycast")]
     [Tooltip("Physics2D layer mask used for the gating raycast (works in FixedDirectional mode)")]
     public LayerMask raycastLayerMask = Physics2D.DefaultRaycastLayers;
@@ -64,8 +77,18 @@ public class MagnetFieldSource : MonoBehaviour
     
     private void OnValidate()
     {
-        if (isActiveAndEnabled) 
+        if (isActiveAndEnabled)
+        {
+#if UNITY_EDITOR
+            // Defer Rebuild to avoid SendMessage errors during OnValidate
+            UnityEditor.EditorApplication.delayCall += () =>
+            {
+                if (this && isActiveAndEnabled) Rebuild();
+            };
+#else
             Rebuild();
+#endif
+        }
 
         // Normalize direction (and guard against zero vector)
         if (fixedDirection.sqrMagnitude < 1e-6f)
@@ -106,6 +129,31 @@ public class MagnetFieldSource : MonoBehaviour
     public void Rebuild()
     {
         Regions.Clear();
+        // Clear old VFX from list
+        if (spawnedVFX != null)
+        {
+            foreach (var v in spawnedVFX)
+            {
+                if (v)
+                {
+                    if (Application.isPlaying) Destroy(v.gameObject);
+                    else DestroyImmediate(v.gameObject);
+                }
+            }
+            spawnedVFX.Clear();
+        }
+        
+        // Also cleanup any orphaned VFX children that might have lost their reference
+        // Iterate backwards to safely remove while iterating
+        for (int i = transform.childCount - 1; i >= 0; i--)
+        {
+            Transform child = transform.GetChild(i);
+            if (child.name.StartsWith("VFX_"))
+            {
+                if (Application.isPlaying) Destroy(child.gameObject);
+                else DestroyImmediate(child.gameObject);
+            }
+        }
 
         if (!composite)
         {
@@ -173,6 +221,45 @@ public class MagnetFieldSource : MonoBehaviour
                 strength        = strength,
                 worldPath       = pathWorld
             });
+
+            // Instantiate VFX
+            if (vfxPrefab)
+            {
+                // Calculate bounds
+                if (pathWorld.Length > 0)
+                {
+                    Bounds bounds = new Bounds(pathWorld[0], Vector3.zero);
+                    foreach (var p in pathWorld) bounds.Encapsulate(p);
+
+                    // Create object
+                    GameObject go = Instantiate(vfxPrefab, transform);
+                    go.name = $"VFX_{i}";
+                    MagnetVFX vfx = go.GetComponent<MagnetVFX>();
+                    if (vfx)
+                    {
+                        // Apply per-magnet settings
+                        vfx.radiusMultiplier = vfxRadiusMultiplier;
+                        vfx.widthMultiplier = vfxWidthMultiplier;
+                        vfx.speed = vfxSpeed;
+                        vfx.opacity = vfxOpacity;
+
+                        // Use maxInfluenceRadius. If 0 (infinite), pick a reasonable default visual range like 15.
+                        float visualRange = (maxInfluenceRadius > 0) ? maxInfluenceRadius : 15f;
+                        
+                        // Calculate world direction for FixedDirectional mode
+                        Vector2 worldDir = fixedDirection;
+                        if (fieldMode == MagnetFieldMode.FixedDirectional && directionsInLocalSpace)
+                        {
+                            worldDir = transform.TransformDirection(fixedDirection);
+                        }
+                        if (worldDir.sqrMagnitude < 1e-6f) worldDir = Vector2.right;
+                        worldDir.Normalize();
+
+                        vfx.Initialize(bounds, visualRange, polarity, fieldMode, worldDir);
+                        spawnedVFX.Add(vfx);
+                    }
+                }
+            }
         }
         // Debug.Log($"effRadiuses of each magnet: {string.Join(", ", Regions.ConvertAll(r => r.effectiveRadius.ToString("F2")))}, strengthScale: {strengthScale}");
     }

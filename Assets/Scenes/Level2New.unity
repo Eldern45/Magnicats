@@ -5526,6 +5526,7 @@ MonoBehaviour:
   fieldMode: 0
   fixedDirection: {x: 0, y: 1}
   directionsInLocalSpace: 1
+  vfxPrefab: {fileID: 6813694833341965853, guid: 8e73542ff19e9ba43a4393365b4b7612, type: 3}
   raycastLayerMask:
     serializedVersion: 2
     m_Bits: 64

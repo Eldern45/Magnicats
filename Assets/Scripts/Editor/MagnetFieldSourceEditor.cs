@@ -20,6 +20,11 @@ public class MagnetFieldSourceEditor : Editor
     SerializedProperty falloffPower;
     SerializedProperty maxInfluenceRadius;
     SerializedProperty minDistance;
+    SerializedProperty vfxPrefab;
+    SerializedProperty vfxRadiusMultiplier;
+    SerializedProperty vfxWidthMultiplier;
+    SerializedProperty vfxSpeed;
+    SerializedProperty vfxOpacity;
 
     private void OnEnable()
     {
@@ -38,6 +43,11 @@ public class MagnetFieldSourceEditor : Editor
         falloffPower = serializedObject.FindProperty("falloffPower");
         maxInfluenceRadius = serializedObject.FindProperty("maxInfluenceRadius");
         minDistance = serializedObject.FindProperty("minDistance");
+        vfxPrefab = serializedObject.FindProperty("vfxPrefab");
+        vfxRadiusMultiplier = serializedObject.FindProperty("vfxRadiusMultiplier");
+        vfxWidthMultiplier = serializedObject.FindProperty("vfxWidthMultiplier");
+        vfxSpeed = serializedObject.FindProperty("vfxSpeed");
+        vfxOpacity = serializedObject.FindProperty("vfxOpacity");
     }
 
     public override void OnInspectorGUI()
@@ -67,6 +77,14 @@ public class MagnetFieldSourceEditor : Editor
         EditorGUILayout.PropertyField(falloffPower);
         EditorGUILayout.PropertyField(maxInfluenceRadius);
         EditorGUILayout.PropertyField(minDistance);
+        
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Visual Effects", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(vfxPrefab);
+        EditorGUILayout.PropertyField(vfxRadiusMultiplier);
+        EditorGUILayout.PropertyField(vfxWidthMultiplier);
+        EditorGUILayout.PropertyField(vfxSpeed);
+        EditorGUILayout.PropertyField(vfxOpacity);
 
         serializedObject.ApplyModifiedProperties();
 

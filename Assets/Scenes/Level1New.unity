@@ -5142,6 +5142,11 @@ MonoBehaviour:
   fieldMode: 0
   fixedDirection: {x: 0, y: 1}
   directionsInLocalSpace: 1
+  vfxPrefab: {fileID: 6813694833341965853, guid: 8e73542ff19e9ba43a4393365b4b7612, type: 3}
+  vfxRadiusMultiplier: 0.6
+  vfxWidthMultiplier: 1
+  vfxSpeed: 2
+  vfxOpacity: 0.33
   raycastLayerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -6056,6 +6061,18 @@ PrefabInstance:
     - target: {fileID: 3276537861509153639, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4831680530437004395, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
+      propertyPath: clickMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4831680530437004395, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
+      propertyPath: heroPolarity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4831680530437004395, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
+      propertyPath: lockedPolarity
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5033938853666747380, guid: e680fc9c09b0fd54cad05e8fcf72c7f4, type: 3}
       propertyPath: m_LocalPosition.x
