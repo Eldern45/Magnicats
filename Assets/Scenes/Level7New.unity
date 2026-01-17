@@ -795,8 +795,8 @@ MonoBehaviour:
   followHorizontal: 1
   followVertical: 1
   deadZone: {x: 2, y: 1.5}
-  smoothTime: 0.15
-  maxSpeed: 20
+  smoothTime: 0.1
+  maxSpeed: 30
   useUnscaledTime: 0
   enableLookahead: 1
   lookaheadDistance: {x: 2, y: 1}
