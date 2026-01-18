@@ -637,7 +637,7 @@ MonoBehaviour:
   limitBottom: 1
   groundY: -8.03
   limitTop: 1
-  ceilingY: 24
+  ceilingY: 12
   limitLeft: 1
   limitRight: 1
   leftBoundX: -16.04
