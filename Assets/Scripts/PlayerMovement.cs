@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
@@ -16,14 +16,24 @@ public class PlayerMovement : MonoBehaviour
     [Header("Animation")]
     [SerializeField] private Animator _anim;
 
+    [Header("Idle Randomization")]
+    [Range(0f, 1f)]
+    [SerializeField] private float idleRareChance = 0.20f; // chance for _2 and for _3 (each)
+
+    [Header("Spin")]
+    [Tooltip("Degrees per second. Applied by rotating THIS GameObject (colliders included).")]
+    [SerializeField] private float spinRotationSpeed = 720f;
+
     // --- Movement Settings ---
-    [Header("Movement")] public float moveSpeed = 8f;
+    [Header("Movement")]
+    public float moveSpeed = 8f;
     public float accelGround = 80f;
     public float accelAir = 60f;
     private const float DeadZone = 0.1f;
 
     // --- Jump Settings ---
-    [Header("Jump")] public float jumpForce = 5f;
+    [Header("Jump")]
+    public float jumpForce = 5f;
     public float jumpBufferTime = 0.2f;
     public float coyoteTime = 0.12f;
     private float _lastJumpPressedTime = float.NegativeInfinity;
@@ -59,16 +69,26 @@ public class PlayerMovement : MonoBehaviour
     private Collider2D _collider;
 
     // --- Ground Check ---
-    [Header("Ground Check")] public Vector2 boxSize = new(0.5f, 0.1f);
+    [Header("Ground Check")]
+    public Vector2 boxSize = new(0.5f, 0.1f);
     public float castDistance = 0.1f;
     public LayerMask groundLayer;
     private bool _isGrounded;
 
     // --- Physics Materials ---
-    [Header("Physics Materials")] public PhysicsMaterial2D groundMaterial;
+    [Header("Physics Materials")]
+    public PhysicsMaterial2D groundMaterial;
     public PhysicsMaterial2D airMaterial;
 
     private PlayerMagnetController _magnetController;
+
+    // --- Animation bookkeeping ---
+    private string _currentAnimState = "";
+    private string _currentIdleColorSuffix = "";
+    private int _currentIdleVariant = 1;
+
+    // --- Spin state control ---
+    private bool _spinUntilGround = false;
 
     private void Awake()
     {
@@ -94,6 +114,8 @@ public class PlayerMovement : MonoBehaviour
         HandleJumpBuffer();
         UpdateSpriteFacing();
         HandleDashInput();
+
+        ApplySpinRotation();
         UpdateAnimationState();
     }
 
@@ -125,11 +147,20 @@ public class PlayerMovement : MonoBehaviour
             _sr.flipX = _moveInput.x < 0f;
     }
 
-    private void UpdateAnimationState()
+    private void ApplySpinRotation()
     {
-        if (_anim == null) return;
+        // Spin only while "spin state" is active and we're airborne.
+        if (!_spinUntilGround || _isGrounded) return;
 
-        // Decide which color suffix to use
+        // Unity +Z = counterclockwise. We want:
+        // facing right (flipX=false) => clockwise => negative Z
+        // facing left  (flipX=true)  => counterclockwise => positive Z
+        float zDelta = (_sr.flipX ? +1f : -1f) * spinRotationSpeed * Time.deltaTime;
+        transform.Rotate(0f, 0f, zDelta);
+    }
+
+    private string GetColorSuffix()
+    {
         string colorSuffix = "Red";
 
         if (_magnetController != null)
@@ -148,26 +179,69 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        return colorSuffix;
+    }
+
+    private int RollIdleVariant()
+    {
+        // _2 and _3 each have idleRareChance, otherwise _1.
+        float r = Random.value;
+        float p2 = idleRareChance;
+        float p3 = idleRareChance;
+        float p1 = Mathf.Clamp01(1f - (p2 + p3)); // default ~0.60 when rareChance=0.20
+
+        if (r < p1) return 1;
+        if (r < p1 + p2) return 2;
+        return 3;
+    }
+
+    private void UpdateAnimationState()
+    {
+        if (_anim == null) return;
+
+        string colorSuffix = GetColorSuffix();
+
         bool isMovingHoriz = Mathf.Abs(_moveInput.x) > DeadZone && _isGrounded;
         bool inAir = !_isGrounded;
 
-        // Build state name like "Walk_Red", "Jump_Blue", etc.
-        string stateName;
+        string desiredState;
 
-        if (inAir)
+        if (_spinUntilGround && inAir)
         {
-            stateName = $"Jump_{colorSuffix}";
+            desiredState = $"Spin_{colorSuffix}";
+        }
+        else if (inAir)
+        {
+            desiredState = $"Jump_{colorSuffix}";
         }
         else if (isMovingHoriz)
         {
-            stateName = $"Walk_{colorSuffix}";
+            desiredState = $"Walk_{colorSuffix}";
         }
         else
         {
-            stateName = $"Idle_{colorSuffix}";
+            // Roll only when ENTERING idle, or if color changes while idle.
+            bool enteringIdle = !_currentAnimState.StartsWith("Idle_");
+            bool colorChangedWhileIdle = _currentAnimState.StartsWith("Idle_") && _currentIdleColorSuffix != colorSuffix;
+
+            if (enteringIdle || colorChangedWhileIdle)
+            {
+                _currentIdleVariant = RollIdleVariant();
+                _currentIdleColorSuffix = colorSuffix;
+
+                // Optional: make sure you end upright once you actually settle into idle.
+                transform.rotation = Quaternion.identity;
+            }
+
+            desiredState = $"Idle_{colorSuffix}_{_currentIdleVariant}";
         }
 
-        _anim.Play(stateName);
+        // Prevent restarting the same clip every frame
+        if (_currentAnimState != desiredState)
+        {
+            _currentAnimState = desiredState;
+            _anim.Play(desiredState);
+        }
     }
 
     // --- Movement & Jumping ---
@@ -177,10 +251,18 @@ public class PlayerMovement : MonoBehaviour
         bool wasGrounded = _isGrounded;
         _isGrounded = IsGrounded();
         _collider.sharedMaterial = _isGrounded ? groundMaterial : airMaterial;
+
         if (_isGrounded)
         {
             _lastGroundedTime = Time.time;
             doubleJumpAvailable = canDoubleJump; // refresh
+
+            // Landing cancels spin, just like Jump -> Idle/Walk
+            if (_spinUntilGround)
+            {
+                _spinUntilGround = false;
+                transform.rotation = Quaternion.identity; // keep upright after landing
+            }
 
             if (!wasGrounded)
                 landSound?.Play();
@@ -229,6 +311,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 doubleJumpAvailable = false;
                 canDoubleJump = false; // remove ability after use
+
+                // Double jump triggers Spin_[color] until landing
+                _spinUntilGround = true;
+
                 Jump();
                 _lastJumpPressedTime = float.NegativeInfinity;
             }
@@ -263,6 +349,9 @@ public class PlayerMovement : MonoBehaviour
         isDashing = true;
         dashEndTime = Time.time + dashDuration;
         canDash = false; // remove ability after use
+
+        // Dash triggers Spin_[color] until landing
+        _spinUntilGround = true;
 
         float direction = _sr.flipX ? -1f : 1f;
         _rb.linearVelocity = new Vector2(direction * dashSpeed, 12f);
@@ -321,7 +410,9 @@ public class PlayerMovement : MonoBehaviour
         canDoubleJump = true;
         doubleJumpAvailable = true;
     }
+
     public void GrantDash() => canDash = true;
+
     public void GrantShield()
     {
         hasShield = true;

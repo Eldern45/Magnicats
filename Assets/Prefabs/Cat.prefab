@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5033938853666747380}
-  - component: {fileID: 38360982387697233}
+  - component: {fileID: 6124633520413956599}
   - component: {fileID: 2029228373367540822}
   - component: {fileID: 4831680530437004395}
   - component: {fileID: 627456879280969052}
@@ -37,7 +37,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &38360982387697233
+--- !u!212 &6124633520413956599
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -89,7 +89,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.46, y: 2}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -160,6 +160,8 @@ MonoBehaviour:
   dashSound: {fileID: 11400000, guid: 4dea5da69ee164592b15496cc8610531, type: 2}
   deathSound: {fileID: 11400000, guid: 97b82dcf226594f5caa8d448eef446e8, type: 2}
   _anim: {fileID: 0}
+  idleRareChance: 0.2
+  spinRotationSpeed: 720
   moveSpeed: 14
   accelGround: 75
   accelAir: 60
@@ -217,7 +219,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.6, y: 0.43}
     oldSize: {x: 2, y: 2}
-    newSize: {x: 1.46, y: 2}
+    newSize: {x: 2, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
