@@ -1389,6 +1389,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameController
   musicSource: {fileID: 1409285717}
   musicFilter: {fileID: 1409285718}
+  menuMusic: {fileID: 8300000, guid: 7750ec808b196c84e931053591156ee2, type: 3}
+  gameplayMusic: {fileID: 8300000, guid: 9b4181e11958fba4a86e7c0c9c22d249, type: 3}
 --- !u!4 &1409285716
 Transform:
   m_ObjectHideFlags: 0

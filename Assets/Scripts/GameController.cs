@@ -22,6 +22,8 @@ public class GameController : MonoBehaviour
     [Header("Music")]
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioLowPassFilter musicFilter;
+    [SerializeField] private AudioClip menuMusic;
+    [SerializeField] private AudioClip gameplayMusic;
 
     public float TotalTime { get; private set; }
     public int CurrentLevel { get; set; }
@@ -67,8 +69,24 @@ public class GameController : MonoBehaviour
         }
     }
 
+    private void PlayMusic(AudioClip clip)
+    {
+        if (musicSource == null || clip == null) return;
+
+        // If the same clip is already playing, don't restart it
+        if (musicSource.clip == clip && musicSource.isPlaying) return;
+
+        musicSource.Stop();
+        musicSource.clip = clip;
+        musicSource.loop = true;
+        musicSource.Play();
+    }
+
     void SetupButtons()
     {
+        // Whenever we setup buttons (means we are in Start Menu), play menu music
+        PlayMusic(menuMusic);
+
         var canvas = GameObject.Find("StartMenu");
         if (canvas == null)
         {
@@ -160,16 +178,7 @@ public class GameController : MonoBehaviour
         ResetTimer();
         CurrentLevel = 1;
 
-        // Start Music Logic
-        if (musicSource != null)
-        {
-            musicSource.loop = true;
-            if (!musicSource.isPlaying)
-            {
-                musicSource.Play();
-            }
-        }
-
+        PlayMusic(gameplayMusic);
         ResumeGame();
 
         SceneManager.LoadScene("Tutorial1");
@@ -185,12 +194,7 @@ public class GameController : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
-        // Stop Music
-        if (musicSource != null)
-        {
-            musicSource.Stop();
-        }
-
+        PlayMusic(menuMusic);
         SceneManager.LoadScene("StartMenu");
     }
 
@@ -227,7 +231,10 @@ public class GameController : MonoBehaviour
     {
         ResetTimer();
         CurrentLevel = 0;
+        
+        PlayMusic(gameplayMusic);
         ResumeGame();
+        
         SceneManager.LoadScene("DemoLevel");
     }
 }
