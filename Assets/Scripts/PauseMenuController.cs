@@ -58,7 +58,7 @@ public class PauseMenuController : MonoBehaviour
     public void OnRestartClicked()
     {
         UIController.Instance.HidePauseMenu();
-        GameController.Instance.StartGame();
+        GameController.Instance.RestartLevel();
     }
 
     public void OnExitClicked()

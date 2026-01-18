@@ -142,6 +142,14 @@ public class GameController : MonoBehaviour
         SceneManager.LoadScene("Level1New");
     }
 
+
+    public void RestartLevel()
+    {
+        ResumeGame();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+
     public void ReturnToMainMenu()
     {
         SceneManager.LoadScene("StartMenu");
