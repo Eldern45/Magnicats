@@ -14,6 +14,8 @@ public class PauseMenuController : MonoBehaviour
     [SerializeField] private GameObject optionsPanel;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button backFromOptionsButton;
+    [SerializeField] private Button restartGameButton;
+    [SerializeField] private Button continueButton;
 
     [Header("Audio")]
     [SerializeField] private AudioMixer audioMixer;
@@ -30,6 +32,8 @@ public class PauseMenuController : MonoBehaviour
         mainMenuButton.onClick.AddListener(OnExitClicked);
         optionsButton.onClick.AddListener(ShowOptions);
         backFromOptionsButton.onClick.AddListener(HideOptions);
+        restartGameButton.onClick.AddListener(OnRestartGameClicked);
+        continueButton.onClick.AddListener(OnContinueClicked);
 
         float savedVolume = PlayerPrefs.GetFloat(VOLUME_KEY, 1f);
         volumeSlider.value = savedVolume;
@@ -59,6 +63,17 @@ public class PauseMenuController : MonoBehaviour
     {
         UIController.Instance.HidePauseMenu();
         GameController.Instance.RestartLevel();
+    }
+
+    public void OnRestartGameClicked()
+    {
+        UIController.Instance.HidePauseMenu();
+        GameController.Instance.StartGame();
+    }
+
+    public void OnContinueClicked()
+    {
+        UIController.Instance.HidePauseMenu();
     }
 
     public void OnExitClicked()
