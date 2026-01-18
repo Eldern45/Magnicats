@@ -18,6 +18,11 @@ public class GameController : MonoBehaviour
     private Button playButton;
     private Button demoLevelButton;
     private Button exitButton;
+
+    [Header("Music")]
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioLowPassFilter musicFilter;
+
     public float TotalTime { get; private set; }
     public int CurrentLevel { get; set; }
     public bool IsPaused { get; private set; }
@@ -28,6 +33,14 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            
+            // Auto-setup audio components if missing
+            if (musicSource == null) musicSource = GetComponent<AudioSource>();
+            if (musicFilter == null) musicFilter = GetComponent<AudioLowPassFilter>();
+            
+            // Ensure filter starts disabled (clear sound)
+            if (musicFilter != null) musicFilter.enabled = false;
+
             SceneManager.sceneLoaded += OnSceneLoaded;
             SetupButtons();
         }
@@ -40,7 +53,10 @@ public class GameController : MonoBehaviour
 
     void OnDestroy()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        if (Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -120,12 +136,18 @@ public class GameController : MonoBehaviour
     {
         IsPaused = true;
         Time.timeScale = 0f;
+        
+        // Muffle music
+        if (musicFilter != null) musicFilter.enabled = true;
     }
 
     public void ResumeGame()
     {
         IsPaused = false;
         Time.timeScale = 1f;
+        
+        // Unmuffle music
+        if (musicFilter != null) musicFilter.enabled = false;
     }
 
     public void ResetTimer()
@@ -137,6 +159,17 @@ public class GameController : MonoBehaviour
     {
         ResetTimer();
         CurrentLevel = 1;
+
+        // Start Music Logic
+        if (musicSource != null)
+        {
+            musicSource.loop = true;
+            if (!musicSource.isPlaying)
+            {
+                musicSource.Play();
+            }
+        }
+
         ResumeGame();
 
         SceneManager.LoadScene("Tutorial1");
@@ -152,6 +185,12 @@ public class GameController : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
+        // Stop Music
+        if (musicSource != null)
+        {
+            musicSource.Stop();
+        }
+
         SceneManager.LoadScene("StartMenu");
     }
 
