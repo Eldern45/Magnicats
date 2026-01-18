@@ -40,7 +40,7 @@ public class PauseMenuController : MonoBehaviour
         SetMixerVolume(savedVolume);
 
         volumeSlider.onValueChanged.AddListener(OnVolumeChanged);
-        EventSystem.current.SetSelectedGameObject(optionsButton.gameObject);
+        EventSystem.current.SetSelectedGameObject(continueButton.gameObject);
     }
 
     void SetMixerVolume(float value)
