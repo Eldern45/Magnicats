@@ -171,7 +171,7 @@ MonoBehaviour:
   dashSpeed: 35
   dashDuration: 0.15
   hasShield: 0
-  boxSize: {x: 0.84, y: 0.15}
+  boxSize: {x: 0.88, y: 0.15}
   castDistance: 0.85
   groundLayer:
     serializedVersion: 2
