@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b73102e25d6b84b3f8129af7f9cbd199, type: 3}
   m_Name: MagnetBuzz
   m_EditorClassIdentifier: Assembly-CSharp::AudioClipGroup
-  VolumeMin: 1
-  VolumeMax: 1
+  VolumeMin: 1.1
+  VolumeMax: 1.1
   PitchMin: 1
   PitchMax: 1
   Cooldown: 0.1

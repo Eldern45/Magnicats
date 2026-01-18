@@ -223,7 +223,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void StartDemoLevel()
+    public void StartDemoLevel()
     {
         ResetTimer();
         CurrentLevel = 0;
