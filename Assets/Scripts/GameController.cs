@@ -61,12 +61,12 @@ public class GameController : MonoBehaviour
         }
 
         startMenuPanel = canvas.transform.Find("StartPanel")?.gameObject;
-        optionsPanel   = canvas.transform.Find("OptionsPanel")?.gameObject;
+        optionsPanel = canvas.transform.Find("OptionsPanel")?.gameObject;
 
-        playButton      = canvas.transform.Find("StartPanel/PlayButton")?.GetComponent<Button>();
+        playButton = canvas.transform.Find("StartPanel/PlayButton")?.GetComponent<Button>();
         demoLevelButton = canvas.transform.Find("StartPanel/DemoLevelButton")?.GetComponent<Button>();
-        exitButton      = canvas.transform.Find("StartPanel/ExitButton")?.GetComponent<Button>();
-        optionsButton   = canvas.transform.Find("StartPanel/OptionsButton")?.GetComponent<Button>();
+        exitButton = canvas.transform.Find("StartPanel/ExitButton")?.GetComponent<Button>();
+        optionsButton = canvas.transform.Find("StartPanel/OptionsButton")?.GetComponent<Button>();
         backFromOptionsButton = canvas.transform.Find("OptionsPanel/BackButton")?.GetComponent<Button>();
 
         if (playButton != null)
@@ -139,7 +139,7 @@ public class GameController : MonoBehaviour
         CurrentLevel = 1;
         ResumeGame();
 
-        SceneManager.LoadScene("Level1New");
+        SceneManager.LoadScene("Tutorial1");
     }
 
     public void ReturnToMainMenu()

@@ -8,9 +8,6 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 1
-    path: Assets/Scenes/StartMenu.unity
-    guid: 4bf3c46b1d96547a2bebd48fae5c9847
   - enabled: 0
     path: Assets/Scenes/TestAndOldLevels/Level1.unity
     guid: 14f14b728d76e8240af594edd7ab919f
@@ -24,8 +21,23 @@ EditorBuildSettings:
     path: Assets/Scenes/TestAndOldLevels/Level3.unity
     guid: d8f91c967e388594799ddf2e6d63a8ca
   - enabled: 1
+    path: Assets/Scenes/StartMenu.unity
+    guid: 4bf3c46b1d96547a2bebd48fae5c9847
+  - enabled: 1
     path: Assets/Scenes/WinScreen.unity
     guid: 3cde050e18a953743b0c878da4df9921
+  - enabled: 1
+    path: Assets/Scenes/DemoLevel.unity
+    guid: e5fb547885f2aec438ccda5013f962dd
+  - enabled: 1
+    path: Assets/Scenes/Tutorial1.unity
+    guid: 98da74ea3094504668da909a92bd385e
+  - enabled: 1
+    path: Assets/Scenes/Tutorial2.unity
+    guid: 60b2ef590b3b86f0484be3f380069ac9
+  - enabled: 1
+    path: Assets/Scenes/Tutorial3.unity
+    guid: 1bb539fd68caa9ecfb245cdebbc80e59
   - enabled: 1
     path: Assets/Scenes/Level1New.unity
     guid: dc992a0f6fdcc734caf86c6f5afebcea
@@ -35,9 +47,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level3New.unity
     guid: cb3651d4a98439c4e8d58a405d30bba3
-  - enabled: 1
-    path: Assets/Scenes/DemoLevel.unity
-    guid: e5fb547885f2aec438ccda5013f962dd
   - enabled: 1
     path: Assets/Scenes/Level4New.unity
     guid: 7a6329fa0315f1744836fbb061b28003
