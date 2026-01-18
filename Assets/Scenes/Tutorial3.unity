@@ -20862,8 +20862,8 @@ MonoBehaviour:
   m_text: 'Dash.
 
 
-    Another popular movement mechanic, it can allow you to clear
-    large or narrow gaps quickly.'
+    Helpful when trying to clear a narrow gap. Use it with key
+    Shift or the east face button on your controller'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 03541c4e6a7a469199dd03c64f5974cd, type: 2}
   m_sharedMaterial: {fileID: 5615190363187750931, guid: 03541c4e6a7a469199dd03c64f5974cd, type: 2}
